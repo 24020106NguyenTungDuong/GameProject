@@ -1,0 +1,138 @@
+# depslib dependency file v1.0
+1740827086 source:c:\users\home\desktop\test123\test\main.cpp
+	<iostream>
+	<SDL.h>
+	<SDL_image.h>
+	<vector>
+	<ctime>
+	"RenderWindow.hpp"
+	"Entity.hpp"
+	"utils.hpp"
+	"constants.hpp"
+	"Player.hpp"
+	"camera.hpp"
+
+1739625063 source:c:\users\home\desktop\test123\test\src\core\engine.cpp
+	"Engine.h"
+
+1739625062 c:\users\home\desktop\test123\test\src\core\engine.h
+
+1740822659 c:\users\home\desktop\test123\test\src\core\renderwindow.hpp
+	<SDL.h>
+	<SDL_image.h>
+	"Entity.hpp"
+	"constants.hpp"
+	"tileMap.hpp"
+	"camera.hpp"
+
+1740742510 source:c:\users\home\desktop\test123\test\src\core\renderwindow.cpp
+	<SDL.h>
+	<SDL_image.h>
+	<iostream>
+	"RenderWindow.hpp"
+	"Entity.hpp"
+	"utils.hpp"
+	"constants.hpp"
+	"camera.hpp"
+
+1739714988 source:c:\users\home\desktop\test123\test\res\entity\entity.cpp
+	"Entity.hpp"
+	<SDL.h>
+	<SDL_image.h>
+
+1739699517 c:\users\home\desktop\test123\test\res\entity\entity.hpp
+	<SDL.h>
+	<SDL_image.h>
+
+1740822494 source:c:\users\home\desktop\test123\test\src\entity\entity.cpp
+	"Entity.hpp"
+	"constants.hpp"
+	<SDL.h>
+	<SDL_image.h>
+	"math.hpp"
+
+1740748404 c:\users\home\desktop\test123\test\src\entity\entity.hpp
+	<SDL.h>
+	<SDL_image.h>
+	<iostream>
+	"utils.hpp"
+	"math.hpp"
+	"animation.hpp"
+	"constants.hpp"
+
+1739856071 source:c:\users\home\desktop\test123\test\src\math\math.cpp
+	"math.hpp"
+
+1740822189 c:\users\home\desktop\test123\test\src\math\math.hpp
+
+1740725797 source:c:\users\home\desktop\test123\test\src\utils\utils.cpp
+	"utils.hpp"
+
+1740731387 c:\users\home\desktop\test123\test\src\utils\utils.hpp
+	<SDL.h>
+
+1739858139 c:\users\home\desktop\test123\test\constants.hpp
+
+1739858139 c:\users\home\desktop\test123\test\\constants.hpp
+
+1740820987 c:\users\home\desktop\test123\test\include\constants.hpp
+	"math.hpp"
+
+1739859921 source:c:\users\home\desktop\test123\test\include\constants.cpp
+	"constants.hpp"
+
+1740297584 source:c:\users\home\desktop\test123\test\src\animation\animation.cpp
+	"animation.hpp"
+
+1740297584 c:\users\home\desktop\test123\test\src\animation\animation.hpp
+	<SDL.h>
+	<SDL_image.h>
+
+1740750239 source:c:\users\home\desktop\test123\test\src\entity\player\player.cpp
+	"Player.hpp"
+	"constants.hpp"
+	"utils.hpp"
+
+1740748404 c:\users\home\desktop\test123\test\src\entity\player\player.hpp
+	"animation.hpp"
+	"Entity.hpp"
+	"math.h"
+	"constants.hpp"
+	"SDL.h"
+	"Projectile.hpp"
+
+1740392867 source:c:\users\home\desktop\test123\test\src\entity\player\slashattack\slashattack.cpp
+	"slashAttack.hpp"
+
+1740392841 c:\users\home\desktop\test123\test\src\entity\player\slashattack\slashattack.hpp
+	"animation.hpp"
+	"Entity.hpp"
+	"math.h"
+	"constants.hpp"
+	"SDL.h"
+	"Player.hpp"
+
+1740727700 source:c:\users\home\desktop\test123\test\src\entity\projectile\projectile.cpp
+	"Projectile.hpp"
+
+1740409710 c:\users\home\desktop\test123\test\src\entity\projectile\projectile.hpp
+	"Entity.hpp"
+	"math.hpp"
+	"constants.hpp"
+
+1740706952 source:c:\users\home\desktop\test123\test\src\map\tilemap.cpp
+	"tileMap.hpp"
+
+1740707164 c:\users\home\desktop\test123\test\src\map\tilemap.hpp
+	<SDL.h>
+	"math.h"
+	"constants.hpp"
+
+1740724782 source:c:\users\home\desktop\test123\test\src\camera\camera.cpp
+	"camera.hpp"
+
+1740724129 c:\users\home\desktop\test123\test\src\camera\camera.hpp
+	<SDL.h>
+	"constants.hpp"
+	"Entity.hpp"
+

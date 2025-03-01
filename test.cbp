@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="test" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/test" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="./" />
+					<Add directory="src/core" />
+					<Add directory="src/Entity" />
+					<Add directory="src/Math" />
+					<Add directory="src/Utils" />
+					<Add directory="include" />
+					<Add directory="src/Animation" />
+					<Add directory="src/Entity/Player" />
+					<Add directory="src/Entity/Player/SlashAttack" />
+					<Add directory="src/Entity/Projectile" />
+					<Add directory="src/Map" />
+					<Add directory="src/Camera" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/test" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="./" />
+					<Add directory="src/core" />
+					<Add directory="src/Entity" />
+					<Add directory="src/Math" />
+					<Add directory="src/Utils" />
+					<Add directory="include" />
+					<Add directory="src/Animation" />
+					<Add directory="src/Entity/Player" />
+					<Add directory="src/Entity/Player/SlashAttack" />
+					<Add directory="src/Entity/Projectile" />
+					<Add directory="src/Map" />
+					<Add directory="src/Camera" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="include/constants.cpp" />
+		<Unit filename="include/constants.hpp" />
+		<Unit filename="main.cpp" />
+		<Unit filename="res/graphics/Screenshot 2025-02-14 200933.png" />
+		<Unit filename="res/graphics/common_0.png" />
+		<Unit filename="res/graphics/tileMap/Blue_Brick.png" />
+		<Unit filename="res/graphics/tileMap/Green_Brick.png" />
+		<Unit filename="res/graphics/tileMap/Pink_Brick.png" />
+		<Unit filename="src/Camera/camera.cpp" />
+		<Unit filename="src/Camera/camera.hpp" />
+		<Unit filename="src/Entity/Entity.cpp" />
+		<Unit filename="src/Entity/Entity.hpp" />
+		<Unit filename="src/Entity/Player/Player.cpp" />
+		<Unit filename="src/Entity/Player/Player.hpp" />
+		<Unit filename="src/Entity/Projectile/Projectile.cpp" />
+		<Unit filename="src/Entity/Projectile/Projectile.hpp" />
+		<Unit filename="src/Map/map.txt" />
+		<Unit filename="src/Map/tileMap.cpp" />
+		<Unit filename="src/Map/tileMap.hpp" />
+		<Unit filename="src/Math/math.cpp" />
+		<Unit filename="src/Math/math.hpp" />
+		<Unit filename="src/Utils/utils.cpp" />
+		<Unit filename="src/Utils/utils.hpp" />
+		<Unit filename="src/core/RenderWindow.cpp" />
+		<Unit filename="src/core/RenderWindow.hpp" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
