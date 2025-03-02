@@ -12,12 +12,16 @@ class tileMap
         vector2f position;
         SDL_Rect src;
         SDL_Rect dst;
+        int tileType;
     public:
         tileMap();
-        tileMap(SDL_Texture* p_tileSprite,vector2f p_position)
-        :   tileSprite(p_tileSprite),position(p_position)
+        tileMap(SDL_Texture* p_tileSprite,vector2f p_position,int p_tileType)
+        :   tileSprite(p_tileSprite),position(p_position),tileType(p_tileType)
         {
+            if(tileType==solidTile)
             src.x=rand()%8*16;
+            else if(tileType==platformer)
+                src.x=rand()%4*16;
             src.y=0;
             src.w=16;
             src.h=16;

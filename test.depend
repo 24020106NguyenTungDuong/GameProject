@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1740827086 source:c:\users\home\desktop\test123\test\main.cpp
+1740923953 source:c:\users\home\desktop\test123\test\main.cpp
 	<iostream>
 	<SDL.h>
 	<SDL_image.h>
@@ -25,7 +25,7 @@
 	"tileMap.hpp"
 	"camera.hpp"
 
-1740742510 source:c:\users\home\desktop\test123\test\src\core\renderwindow.cpp
+1740922078 source:c:\users\home\desktop\test123\test\src\core\renderwindow.cpp
 	<SDL.h>
 	<SDL_image.h>
 	<iostream>
@@ -44,14 +44,14 @@
 	<SDL.h>
 	<SDL_image.h>
 
-1740822494 source:c:\users\home\desktop\test123\test\src\entity\entity.cpp
+1740923828 source:c:\users\home\desktop\test123\test\src\entity\entity.cpp
 	"Entity.hpp"
 	"constants.hpp"
 	<SDL.h>
 	<SDL_image.h>
 	"math.hpp"
 
-1740748404 c:\users\home\desktop\test123\test\src\entity\entity.hpp
+1740924097 c:\users\home\desktop\test123\test\src\entity\entity.hpp
 	<SDL.h>
 	<SDL_image.h>
 	<iostream>
@@ -75,7 +75,7 @@
 
 1739858139 c:\users\home\desktop\test123\test\\constants.hpp
 
-1740820987 c:\users\home\desktop\test123\test\include\constants.hpp
+1740923828 c:\users\home\desktop\test123\test\include\constants.hpp
 	"math.hpp"
 
 1739859921 source:c:\users\home\desktop\test123\test\include\constants.cpp
@@ -88,17 +88,18 @@
 	<SDL.h>
 	<SDL_image.h>
 
-1740750239 source:c:\users\home\desktop\test123\test\src\entity\player\player.cpp
+1740923011 source:c:\users\home\desktop\test123\test\src\entity\player\player.cpp
 	"Player.hpp"
 	"constants.hpp"
 	"utils.hpp"
 
-1740748404 c:\users\home\desktop\test123\test\src\entity\player\player.hpp
-	"animation.hpp"
+1740919771 c:\users\home\desktop\test123\test\src\entity\player\player.hpp
+	<SDL.h>
+	<cmath>
 	"Entity.hpp"
 	"math.h"
 	"constants.hpp"
-	"SDL.h"
+	"camera.hpp"
 	"Projectile.hpp"
 
 1740392867 source:c:\users\home\desktop\test123\test\src\entity\player\slashattack\slashattack.cpp
@@ -123,12 +124,12 @@
 1740706952 source:c:\users\home\desktop\test123\test\src\map\tilemap.cpp
 	"tileMap.hpp"
 
-1740707164 c:\users\home\desktop\test123\test\src\map\tilemap.hpp
+1740923953 c:\users\home\desktop\test123\test\src\map\tilemap.hpp
 	<SDL.h>
 	"math.h"
 	"constants.hpp"
 
-1740724782 source:c:\users\home\desktop\test123\test\src\camera\camera.cpp
+1740921434 source:c:\users\home\desktop\test123\test\src\camera\camera.cpp
 	"camera.hpp"
 
 1740724129 c:\users\home\desktop\test123\test\src\camera\camera.hpp

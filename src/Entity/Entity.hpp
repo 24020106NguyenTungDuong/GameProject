@@ -19,7 +19,7 @@ public:
     void Move();
     bool checkCollision(const SDL_Rect& dstTile);
     void checkTileCollision(int p_mapTile[][mapTileWidth]);
-    void handleColision(const SDL_Rect& dstTile);
+    void handleColision(const SDL_Rect& dstTile,int tileType);
     bool isOnPlatform(const SDL_Rect& dstTile);
     float rightSide();
     float botSide();
@@ -31,6 +31,7 @@ SDL_Rect currentFrame;
 int frameCounter;
 int animationRow;
 float rotateAngle;
+SDL_Point rotateCenter;
 SDL_RendererFlip  spriteFlip;
 private:
     SDL_Texture* texture;

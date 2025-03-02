@@ -1,10 +1,11 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
-#include "animation.hpp"
+#include <SDL.h>
+#include<cmath>
 #include "Entity.hpp"
 #include "math.h"
 #include "constants.hpp"
-#include "SDL.h"
+#include "camera.hpp"
 #include "Projectile.hpp"
 
 
@@ -18,7 +19,7 @@ class Player: public Entity
 
     bool isSlashing=1;
     PlayerState currentState=StandingStill;
-    void updatePlayer(const Uint8* keystates,SDL_Event &event, Uint32 &mouseState, Projectile &p_projectile , float timeAcumulator);
+    void updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &mouseState,int mouseX,int mouseY, Projectile &p_projectile , float timeAcumulator,camera Cam);
     void updateProjectile(Projectile &p_projectile,Uint32 &mouseState);
     float jumpStartTime;
 

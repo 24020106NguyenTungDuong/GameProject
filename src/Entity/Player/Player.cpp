@@ -2,12 +2,17 @@
 #include "constants.hpp"
 #include "utils.hpp"
 
-void Player::updatePlayer(const Uint8* keystates,SDL_Event &event, Uint32 &mouseState,Projectile &p_projectile, float timeAcumulator)
+void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &mouseState,int mouseX,int mouseY,Projectile &p_projectile, float timeAcumulator,camera Cam)
 {
+
+
+
     velocity.x=0;
     if(velocity.y==0) isAirborne=0;
 
-    if(isAirborne) {velocity.y+=gravity;}
+    if(isAirborne) {velocity.y+=gravity;
+    if(isSlashing) velocity.y=3;
+    }
 
     float currentTime=utils::getTimeSeconds();
 
@@ -24,6 +29,8 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event, Uint32 &mouse
         spriteFlip=SDL_FLIP_NONE;
         currentState=Running;
     }
+
+    if(isSlashing&&isAirborne) velocity.x/=2;
 
     if(!isAirborne)
         jumpStartTime=currentTime;
@@ -46,29 +53,34 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event, Uint32 &mouse
     else if(velocity.y>0)
         currentState=Falling;
 
-
+    Move();
 
     if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT) )
     {
         p_projectile.active=1;
         isSlashing=1;
         p_projectile.spawnTime = currentTime;
+
     }
 
-           if(spriteFlip==SDL_FLIP_NONE)
-        {
-            p_projectile.position.x=position.x;
-             p_projectile.position.y=position.y+16;
-            p_projectile.spriteFlip=spriteFlip;
+    if(isSlashing)
+    {
+        p_projectile.position=position;
+        p_projectile.rotateCenter={30,30};
+            SDL_Rect dst;
+	dst.x=position.x-Cam.viewPortion.x;
+	dst.y=position.y-Cam.viewPortion.y;
+	dst.w=currentFrame.w * entityScalar;
+	dst.h=currentFrame.h * entityScalar;
+    float dx = mouseX - 480;
+    float dy = mouseY - (320);
+    p_projectile.rotateAngle=atan2(dy,dx)*180.0/M_PI;
+    if(p_projectile.rotateAngle<-90||p_projectile.rotateAngle>90)
+    p_projectile.spriteFlip=SDL_FLIP_VERTICAL;
+    else p_projectile.spriteFlip=SDL_FLIP_NONE;
+    }
 
-        }
-        else
-        {
-            p_projectile.position.x=position.x-60;
-            p_projectile.position.y=position.y+16;
-            p_projectile.spriteFlip=spriteFlip;
 
-        }
 
     if(currentTime-p_projectile.spawnTime>=0.2f)
         {

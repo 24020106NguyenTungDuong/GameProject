@@ -13,7 +13,7 @@
 using namespace std;
 
 int mapTile[mapTileHeight][mapTileWidth]=
-{{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
+{
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
@@ -24,14 +24,15 @@ int mapTile[mapTileHeight][mapTileWidth]=
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0} ,
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
+{1,0,0,0,0,2,2,2,2,2,2,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1} ,
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
+{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1} };
 
 
@@ -57,14 +58,19 @@ int main(int argc, char *argv[])
     camera Cam;
 
 
-    SDL_Texture* greenBrick=window.LoadTexture("res/graphics/tileMap/tileset_2.png");
+    SDL_Texture* greenBrick=window.LoadTexture("res/graphics/tileMap/solidTile.png");
+    SDL_Texture* platform=window.LoadTexture("res/graphics/tileMap/platform.png");
     vector <tileMap> brick;
     int res=0;
     for(int y=0;y<20;y++)
         for(int x=0;x<30;x++)
     {
-        if(mapTile[y][x]==1) {
-            brick.push_back(tileMap(greenBrick,vector2f(32*x,32*y)));
+        if(mapTile[y][x]==solidTile) {
+            brick.push_back(tileMap(greenBrick,vector2f(32*x,32*y),solidTile));
+        }
+        else if(mapTile[y][x]==platformer)
+        {
+            brick.push_back(tileMap(platform,vector2f(32*x,32*y),platformer));
         }
     }
     cout<<brick.size();
@@ -99,21 +105,21 @@ int main(int argc, char *argv[])
 
         const Uint8* keystates = SDL_GetKeyboardState(NULL);
 
-        int mouseX, mouseY;
+       int mouseX, mouseY;
         Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
 
-        player0.updatePlayer(keystates,event, mouseState, slashing ,timeAcumulator);
+        player0.updatePlayer(keystates,event, mouseState,mouseX,mouseY, slashing ,timeAcumulator,Cam);
 
-        //cout<<player0.velocity.x<<'\n';
 
 
         player0.checkTileCollision(mapTile);
 
 
-        player0.Move();
         slashing.updateProj(timeAcumulator);
 
         Cam.updateCamera(player0);
+
+
 
         window.ClearScreen();
         for(int i=0;i<brick.size();i++)

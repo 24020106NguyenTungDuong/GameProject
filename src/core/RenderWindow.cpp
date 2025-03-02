@@ -16,36 +16,6 @@ RenderWindow::RenderWindow(const char* title,int p_width,int p_height)
     if(renderer==NULL)
         std::cout<<"Renderer failed to innit. Error:"<<SDL_GetError<<std::endl;
 }
-//void gameLoop()
-//{
-//    bool GameRunning=1;
-//    SDL_Event event;
-//    float accumulator=0.0f;
-//    float currentTime=utils::getTimeSeconds();
-//    while(GameRunning)
-//    {
-//        float newTime=utils::getTimeSeconds();
-//        float frameTime=newTime-currentTime;
-//        accumulator+=frameTime;
-//        currentTime=newTime;
-//        while(accumulator>=timeStep)
-//        {
-//                while(SDL_PollEvent(&event))
-//            {
-//            if(event.type==SDL_QUIT||event.type==SDL_KEYDOWN)
-//                GameRunning=0;
-//                if(event.type==SDL_KEYDOWN)
-//                {
-//                    platform0.moveDown();
-//                }
-//
-//            }
-//            accumulator-=timeStep;
-//        }
-//
-//    }
-//
-//}
 SDL_Texture* RenderWindow::LoadTexture(const char* p_FilePath)
 {
     SDL_Texture* Texture=NULL;
@@ -81,10 +51,11 @@ void RenderWindow::RenderTexture(Entity& p_entity,camera& p_cam)
 	dst.w=p_entity.currentFrame.w * entityScalar;
 	dst.h=p_entity.currentFrame.h * entityScalar;
 
-   // if(dst.x+dst.w<p_cam.viewPortion.x || dst.x>p_cam.viewPortion.x+screenWidth) return;
-    //if(dst.y+dst.h<p_cam.viewPortion.y || dst.y>p_cam.viewPortion.y+screenHeight) return;
+    //std::cout<<p_cam.viewPortion.x<<' '<<p_cam.viewPortion.y<<'\n';
+//    if(p_entity.position.x+dst.w<p_cam.viewPortion.x || p_entity.position.x>p_cam.viewPortion.x+screenWidth) return;
+//    if(dst.y+dst.h<p_cam.viewPortion.y || dst.y>p_cam.viewPortion.y+screenHeight) return;
 
-    SDL_RenderCopyEx(renderer, p_entity.getTexture(),&src,&dst,p_entity.rotateAngle,NULL,p_entity.spriteFlip);
+    SDL_RenderCopyEx(renderer, p_entity.getTexture(),&src,&dst,p_entity.rotateAngle,&p_entity.rotateCenter,p_entity.spriteFlip);
 }
 void RenderWindow::RenderMap(tileMap& p_tileMap,camera p_cam)
 {
