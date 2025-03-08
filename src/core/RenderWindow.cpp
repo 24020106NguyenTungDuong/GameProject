@@ -51,7 +51,6 @@ void RenderWindow::RenderTexture(Entity& p_entity,camera& p_cam)
 	dst.w=p_entity.currentFrame.w * entityScalar;
 	dst.h=p_entity.currentFrame.h * entityScalar;
 
-    //std::cout<<p_cam.viewPortion.x<<' '<<p_cam.viewPortion.y<<'\n';
 //    if(p_entity.position.x+dst.w<p_cam.viewPortion.x || p_entity.position.x>p_cam.viewPortion.x+screenWidth) return;
 //    if(dst.y+dst.h<p_cam.viewPortion.y || dst.y>p_cam.viewPortion.y+screenHeight) return;
 
@@ -68,6 +67,24 @@ void RenderWindow::RenderMap(tileMap& p_tileMap,camera p_cam)
     if(xPos+dst.w<p_cam.viewPortion.x || xPos >p_cam.viewPortion.x+screenWidth) return;
     if(yPos+dst.h<p_cam.viewPortion.y || yPos >p_cam.viewPortion.y+screenHeight) return;
     SDL_RenderCopy(renderer,p_tileMap.getTexture(),&p_tileMap.src,&dst);
+}
+void RenderWindow::renderChunk(camera p_camera,vector <tileMap>& leftChunk,vector <tileMap>& centerChunk,vector <tileMap>&rightChunk)
+{
+            for(int i=0;i<centerChunk.size();i++)
+        {
+            RenderMap(centerChunk[i],p_camera);
+        }
+
+         for(int i=0;i<rightChunk.size();i++)
+        {
+            RenderMap(rightChunk[i],p_camera);
+        }
+         for(int i=0;i<leftChunk.size();i++)
+        {
+            RenderMap(leftChunk[i],p_camera);
+        }
+
+
 }
 void RenderWindow::Display()
 {

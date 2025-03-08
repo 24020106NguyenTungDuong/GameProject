@@ -10,34 +10,39 @@
 #include "constants.hpp"
 #include "Player.hpp"
 #include "camera.hpp"
+#include "chunkMap/chunkMap.hpp"
 using namespace std;
 
-int mapTile[mapTileHeight][mapTileWidth]=
-{
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{1,0,0,0,0,2,2,2,2,2,2,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1} ,
-{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} ,
-{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1} };
+int mapTile[mapTileHeight][mapTileWidth];
+//{
+//{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+//{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//{1,0,1,2,2,2,2,2,2,1,0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,1,0,0,0,1},
+//{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//{1,0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,0,0,0,1},
+//{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,1,0,1},
+//{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//{1,0,0,0,0,0,0,0,2,2,2,2,1,1,1,1,1,1,2,2,2,0,0,0,0,0,0,0,0,1},
+//{1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1},
+//{1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//{0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+//{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+//{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+//{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+//{1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+//{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+//};
 
 
 int main(int argc, char *argv[])
 {
+    string mapList[4]={"res/mapList/map1.txt","res/mapList/map2.txt","res/mapList/map3.txt","res/mapList/map4.txt"};
+    inputMap(centerMap,mapList[0]);
+    inputMap(rightMap,mapList[rand()%4]);
     srand(time(0));
     if(SDL_Init(SDL_INIT_VIDEO)!=0)
     {
@@ -48,11 +53,11 @@ int main(int argc, char *argv[])
         cout<<"IMG_Init failed. Error:"<<IMG_GetError()<<endl;
     }
     RenderWindow window("Game 1",screenWidth,screenHeight);
-    SDL_Texture* testTexture=window.LoadTexture("res/graphics/playerSprite/player24.png");
+    SDL_Texture* testTexture=window.LoadTexture("res/graphics/playerSprite/player24 - Copy.png");
     SDL_Texture* slashTexture=window.LoadTexture("res/graphics/playerSprite/slash - Copy.png");
 
 
-    Player player0(vector2f(0,100),testTexture);
+    Player player0(vector2f(32,500),testTexture);
     Projectile slashing(vector2f(0,0),slashTexture);
 
     camera Cam;
@@ -60,20 +65,13 @@ int main(int argc, char *argv[])
 
     SDL_Texture* greenBrick=window.LoadTexture("res/graphics/tileMap/solidTile.png");
     SDL_Texture* platform=window.LoadTexture("res/graphics/tileMap/platform.png");
-    vector <tileMap> brick;
-    int res=0;
-    for(int y=0;y<20;y++)
-        for(int x=0;x<30;x++)
-    {
-        if(mapTile[y][x]==solidTile) {
-            brick.push_back(tileMap(greenBrick,vector2f(32*x,32*y),solidTile));
-        }
-        else if(mapTile[y][x]==platformer)
-        {
-            brick.push_back(tileMap(platform,vector2f(32*x,32*y),platformer));
-        }
-    }
-    cout<<brick.size();
+
+     loadChunk(centerMap,greenBrick,platform,centerChunk,0,player0.chunkNumber);
+        loadChunk(rightMap,greenBrick,platform,rightChunk,1,player0.chunkNumber);
+        loadChunk(leftMap,greenBrick,platform,leftChunk,-1,player0.chunkNumber);
+
+
+
     bool gameRunning=1;
     bool pause=0;
 
@@ -112,8 +110,22 @@ int main(int argc, char *argv[])
 
 
 
-        player0.checkTileCollision(mapTile);
 
+        if(int(player0.position.x/screenWidth)>player0.chunkNumber)
+            {player0.chunkNumber++;
+                swap(centerMap,leftMap);
+                swap(centerMap,rightMap);
+    inputMap(rightMap,mapList[rand()%4]);
+     loadChunk(centerMap,greenBrick,platform,centerChunk,0,player0.chunkNumber);
+        loadChunk(rightMap,greenBrick,platform,rightChunk,1,player0.chunkNumber);
+        //loadChunk(leftMap,greenBrick,platform,leftChunk,-1,player0.chunkNumber);
+            }
+         if(int(player0.position.x/screenWidth)<player0.chunkNumber)
+            {player0.chunkNumber--;
+                swap(rightMap,centerMap);
+            }
+
+        player0.checkTileCollision(centerMap);
 
         slashing.updateProj(timeAcumulator);
 
@@ -122,10 +134,20 @@ int main(int argc, char *argv[])
 
 
         window.ClearScreen();
-        for(int i=0;i<brick.size();i++)
-        {
-            window.RenderMap(brick[i],Cam);
-        }
+//        for(int i=0;i<centerChunk.size();i++)
+//        {
+//            window.RenderMap(centerChunk[i],Cam);
+//        }
+//
+//         for(int i=0;i<rightChunk.size();i++)
+//        {
+//            window.RenderMap(rightChunk[i],Cam);
+//        }
+//            for(int i=0;i<leftChunk.size();i++)
+//        {
+//            window.RenderMap(leftChunk[i],Cam);
+//        }
+        window.renderChunk(Cam,leftChunk,centerChunk,rightChunk);
         window.RenderTexture(player0,Cam);
         if(slashing.active) window.RenderTexture(slashing,Cam);
         window.Display();

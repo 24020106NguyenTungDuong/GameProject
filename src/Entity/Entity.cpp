@@ -91,6 +91,7 @@ void Entity::handleColision(const SDL_Rect& dstTile,int tileType)
        velocity.y=1;
         isAirborne=1;
 
+
     }
     else if(minCollision==right&&velocity.x<0)
     {
@@ -99,7 +100,8 @@ void Entity::handleColision(const SDL_Rect& dstTile,int tileType)
     }
 
     }
-    else if(tileType==platformer)
+
+    if(tileType==platformer)
     {
         if(minCollision==top&&velocity.y>0)
     {
@@ -107,6 +109,7 @@ void Entity::handleColision(const SDL_Rect& dstTile,int tileType)
         velocity.y=0;
         isAirborne=0;
     }
+
     }
 
 
@@ -116,19 +119,26 @@ void Entity::handleColision(const SDL_Rect& dstTile,int tileType)
 
 void Entity::checkTileCollision(int p_mapTile[][mapTileWidth])
 {
+
     int leftTile=(position.x-1)/tileSize;
     int rightTile=(rightSide()+1)/tileSize;
     int topTile=(position.y-1)/tileSize;
     int botTile=(botSide()+1)/tileSize;
 
-    leftTile=std::max(leftTile,0);
-    rightTile=std::min(rightTile,29);
-    botTile=std::min(botTile,19);
+        rightTile=rightTile%30;
+        leftTile=leftTile%30;
+//    leftTile=std::max(leftTile,0);
+//    rightTile=std::min(rightTile,29);
+//    botTile=std::min(botTile,19);
+    //cout<<chunkNumber<<' ';
 
     int entityLeft=(position.x)/tileSize;
     int entityCenter=(position.x+entityScalar*currentFrame.w/2)/tileSize;
     int entityRight=(rightSide())/tileSize;
 
+    entityRight=entityRight%30;
+    entityCenter=entityCenter%30;
+    entityLeft=entityLeft%30;
 
     int platformBelow=0;
 
@@ -149,7 +159,7 @@ void Entity::checkTileCollision(int p_mapTile[][mapTileWidth])
                                 if(p_mapTile[y][x])
                             {
                             SDL_Rect dstTile={
-                            tileSize*x,
+                            tileSize*x+chunkNumber*screenWidth,
                             tileSize*y,
                             tileSize,
                             tileSize,

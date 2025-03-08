@@ -23,10 +23,12 @@ public:
     bool isOnPlatform(const SDL_Rect& dstTile);
     float rightSide();
     float botSide();
-    bool isAirborne=0;
+
 public:
+int chunkNumber=0;
 vector2f position;
 vector2f velocity;
+bool isAirborne=0;
 SDL_Rect currentFrame;
 int frameCounter;
 int animationRow;

@@ -64,6 +64,7 @@
 		<Unit filename="res/graphics/tileMap/Blue_Brick.png" />
 		<Unit filename="res/graphics/tileMap/Green_Brick.png" />
 		<Unit filename="res/graphics/tileMap/Pink_Brick.png" />
+		<Unit filename="res/mapList/map1.txt" />
 		<Unit filename="src/Camera/camera.cpp" />
 		<Unit filename="src/Camera/camera.hpp" />
 		<Unit filename="src/Entity/Entity.cpp" />
@@ -72,6 +73,8 @@
 		<Unit filename="src/Entity/Player/Player.hpp" />
 		<Unit filename="src/Entity/Projectile/Projectile.cpp" />
 		<Unit filename="src/Entity/Projectile/Projectile.hpp" />
+		<Unit filename="src/Map/chunkMap/chunkMap.cpp" />
+		<Unit filename="src/Map/chunkMap/chunkMap.hpp" />
 		<Unit filename="src/Map/map.txt" />
 		<Unit filename="src/Map/tileMap.cpp" />
 		<Unit filename="src/Map/tileMap.hpp" />
