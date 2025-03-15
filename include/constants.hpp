@@ -1,7 +1,8 @@
 #ifndef CONSTANTS_HPP_INCLUDED
 #define CONSTANTS_HPP_INCLUDED
 #include "math.hpp"
-
+#include <string>
+using namespace std;
 const int screenWidth=960;
 const int screenHeight=640;
 const int mapTileWidth=30;
@@ -10,7 +11,8 @@ const int groundLevel=608;
 const float timeStep= 0.1f;
 const int solidTile=1;
 const int platformer=2;
-
+const int mapNumber=4;
+const string basePath="res/mapList/";
 const float MoveSpeed=6.0f;
 const float dashSpeed=15.0f;
 const float gravity=0.7f;

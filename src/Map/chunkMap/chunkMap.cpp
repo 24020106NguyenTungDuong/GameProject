@@ -18,6 +18,7 @@ void inputMap(int p_map[][mapTileWidth],string filePath)
 }
 void loadChunk(int p_map[][mapTileWidth],SDL_Texture* greenBrick,SDL_Texture* platform,vector <tileMap> &chunk,int chunkPosition,int chunkNumber)
 {
+    chunk.clear();
                     for(int y=0;y<20;y++)
         {
             for(int x=0;x<30;x++)

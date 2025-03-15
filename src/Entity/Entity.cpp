@@ -4,13 +4,13 @@
 #include <SDL_image.h>
 #include "math.hpp"
 using namespace std;
-Entity::Entity(vector2f p_position,SDL_Texture* p_texture)
+Entity::Entity(vector2f p_position,int entityWidth,int entityHeight,SDL_Texture* p_texture)
     :position(p_position),texture(p_texture)
 {
     currentFrame.x = 0;
 	currentFrame.y = 0;
-	currentFrame.w = playerWidth;
-	currentFrame.h = playerHeight;
+	currentFrame.w = entityWidth;
+	currentFrame.h = entityHeight;
 	frameCounter=0;
 	animationRow=0;
     rotateAngle=0.0f;
@@ -19,6 +19,8 @@ Entity::Entity(vector2f p_position,SDL_Texture* p_texture)
 }
 void Entity::Move()
 {
+    if(velocity.y==0) isAirborne=0;
+     if(isAirborne) velocity.y+=gravity;
     position=velocity+position;
 }
 SDL_Texture* Entity::getTexture()
@@ -70,7 +72,6 @@ void Entity::handleColision(const SDL_Rect& dstTile,int tileType)
 
     float minCollision=std::min(std::min(left,right),std::min(bot,top));
 
-
     if(tileType==solidTile)
     {
 
@@ -116,7 +117,23 @@ void Entity::handleColision(const SDL_Rect& dstTile,int tileType)
 
 
 }
+bool Entity::isOnPlatform(int p_mapTile[][mapTileWidth])
+{
+        int entityLeft=(position.x)/tileSize;
+    int entityCenter=(position.x+entityScalar*currentFrame.w/2)/tileSize;
+    int entityRight=(rightSide())/tileSize;
+     int botTile=(botSide()+1)/tileSize;
+    entityRight=entityRight%30;
+    entityCenter=entityCenter%30;
+    entityLeft=entityLeft%30;
 
+
+
+
+    if(p_mapTile[botTile][entityRight]||p_mapTile[botTile][entityCenter]||p_mapTile[botTile][entityLeft]) return 1;
+
+    return 0;
+}
 void Entity::checkTileCollision(int p_mapTile[][mapTileWidth])
 {
 
@@ -127,30 +144,13 @@ void Entity::checkTileCollision(int p_mapTile[][mapTileWidth])
 
         rightTile=rightTile%30;
         leftTile=leftTile%30;
-//    leftTile=std::max(leftTile,0);
-//    rightTile=std::min(rightTile,29);
-//    botTile=std::min(botTile,19);
-    //cout<<chunkNumber<<' ';
 
-    int entityLeft=(position.x)/tileSize;
-    int entityCenter=(position.x+entityScalar*currentFrame.w/2)/tileSize;
-    int entityRight=(rightSide())/tileSize;
-
-    entityRight=entityRight%30;
-    entityCenter=entityCenter%30;
-    entityLeft=entityLeft%30;
-
-    int platformBelow=0;
+    if(!isAirborne&&!isOnPlatform(p_mapTile)) {
+        isAirborne=1;
+        velocity.y=1;
+    }
 
 
-
-    if(p_mapTile[botTile][entityRight]||p_mapTile[botTile][entityCenter]||p_mapTile[botTile][entityLeft]) platformBelow=1;
-
-    if(entityLeft>29||entityRight<0) platformBelow=0;
-
-    if(!isAirborne&&platformBelow==0) {isAirborne=1;
-                                    velocity.y=1;
-                                    }
         for (int y = topTile; y <= botTile; y++)
          {
                  for (int x = leftTile; x <= rightTile; x++)
@@ -166,6 +166,7 @@ void Entity::checkTileCollision(int p_mapTile[][mapTileWidth])
                             };
                             if(checkCollision(dstTile))
                                 {
+
                                         handleColision(dstTile,p_mapTile[y][x]);
 
 
@@ -178,12 +179,3 @@ void Entity::checkTileCollision(int p_mapTile[][mapTileWidth])
 
 
 }
-
-
-
-//void Entity::updatecurrentFrame()
-//{
-//    currentFrame.y=frameRow*32;
-//    currentFrame.x=(frameCounter/5)*currentFrame.w;
-//    frameCounter=(frameCounter+1)%30;
-//}

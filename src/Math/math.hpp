@@ -28,4 +28,10 @@ struct vector2f
         y=y/length;
     }
 };
+inline float distance(vector2f a,vector2f b)
+{
+
+    return sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y)*(b.y));
+
+}
 #endif // MATH_HPP

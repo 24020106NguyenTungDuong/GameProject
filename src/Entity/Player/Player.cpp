@@ -2,7 +2,7 @@
 #include "constants.hpp"
 #include "utils.hpp"
 
-void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &mouseState,int mouseX,int mouseY,Projectile &p_projectile, float timeAcumulator,camera Cam)
+void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &mouseState,int mouseX,int mouseY,Projectile &slashProjectile, float timeAcumulator,camera Cam)
 {
 
 
@@ -16,17 +16,10 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
     float dx = mouseX - screenWidth/2;
     float dy = mouseY - (position.y+entityScalar*currentFrame.h/2);
 
-//    if(botSide()>groundLevel)
-//    {
-//        position.y=groundLevel-entityScalar*currentFrame.h-1;
-//        isAirborne=0;
-//        velocity.y=0;
-//    }
-    if(velocity.y==0) isAirborne=0;
 
-    if(isAirborne) {velocity.y+=gravity;
-    if(isSlashing) velocity.y=slashFallSpeed;
-    }
+    if(isAirborne&&isSlashing)
+    velocity.y=slashFallSpeed;
+
 
     float currentTime=utils::getTimeSeconds();
 
@@ -35,15 +28,17 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
     dashVector.normalise();
 
 
-   if(keystates[SDL_SCANCODE_LSHIFT]&&!isDashing&&!isDashCooldown)
+   if((mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT))&&!isDashing&&!isDashCooldown)
    {
         currentState=Dashing;
        isDashing=1;
-            p_projectile.active=1;
+            slashProjectile.active=1;
         isSlashing=1;
-        p_projectile.spawnTime = currentTime;
+        slashProjectile.spawnTime = currentTime;
        dashStartTime=currentTime;
        velocity={0,0};
+        rotateAngle=atan2(dy,dx)*180.0/M_PI;
+        spriteFlip=SDL_FLIP_NONE;
    }
 
    if(isDashing)
@@ -54,6 +49,7 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
            isDashCooldown=1;
            dashCooldownTime=currentTime;
            velocity={0,0};
+           rotateAngle=0;
        }
        else
        {
@@ -104,8 +100,8 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
     else if(velocity.y>0)
         currentState=Falling;
 
-Movement:
-    Move();
+
+
 
     if(velocity.x>=0)
     {
@@ -113,31 +109,32 @@ Movement:
     }
     else spriteFlip=SDL_FLIP_HORIZONTAL;
 
-
+Movement:
+    Move();
     if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT) )
     {
-        p_projectile.active=1;
+        slashProjectile.active=1;
         isSlashing=1;
-        p_projectile.spawnTime = currentTime;
+        slashProjectile.spawnTime = currentTime;
 
     }
 
     if(isSlashing)
     {
-        p_projectile.position=position;
-        p_projectile.rotateCenter={entityScalar*currentFrame.w/2,entityScalar*currentFrame.h/2};
+        slashProjectile.position=position;
+        slashProjectile.rotateCenter={entityScalar*currentFrame.w/2,entityScalar*currentFrame.h/2};
 
-    p_projectile.rotateAngle=atan2(dy,dx)*180.0/M_PI;
-    if(p_projectile.rotateAngle<-90||p_projectile.rotateAngle>90)
-    p_projectile.spriteFlip=SDL_FLIP_VERTICAL;
-    else p_projectile.spriteFlip=SDL_FLIP_NONE;
+    slashProjectile.rotateAngle=atan2(dy,dx)*180.0/M_PI;
+    if(slashProjectile.rotateAngle<-90||slashProjectile.rotateAngle>90)
+    slashProjectile.spriteFlip=SDL_FLIP_VERTICAL;
+    else slashProjectile.spriteFlip=SDL_FLIP_NONE;
     }
 
 
 
-    if(currentTime-p_projectile.spawnTime>=0.2f)
+    if(currentTime-slashProjectile.spawnTime>=0.2f)
         {
-            p_projectile.active=0;
+            slashProjectile.active=0;
             isSlashing=0;
         }
 
@@ -158,7 +155,7 @@ Movement:
                             currentFrame.x=1*playerWidth;
                             break;
         case Dashing      : currentFrame.y=2*playerHeight;
-                            currentFrame.x=3*playerWidth;
+                            currentFrame.x=(3+int((currentTime-dashStartTime)/dashTimer*3))*playerWidth;
 
     }
 

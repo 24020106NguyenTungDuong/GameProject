@@ -6,8 +6,8 @@
 class Projectile: public Entity
 {
     public:
-        Projectile(vector2f p_position,SDL_Texture* p_texture)
-    :Entity(p_position,p_texture){
+        Projectile(vector2f p_position,int entityWidth,int entityHeight,SDL_Texture* p_texture)
+    :Entity(p_position,entityWidth,entityHeight,p_texture){
         currentFrame.x=0;
         currentFrame.y=0;
         currentFrame.w=slashWidth;

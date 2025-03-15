@@ -14,8 +14,8 @@ class Player: public Entity
 {
     public:
 
-    Player(vector2f p_position,SDL_Texture* p_texture)
-    :Entity(p_position,p_texture){}
+    Player(vector2f p_position,int entityWidth,int entityHeight,SDL_Texture* p_texture)
+    :Entity(p_position,entityWidth,entityHeight,p_texture){}
     bool isDashing=0;
     bool isSlashing=0;
     bool isDashCooldown=0;
