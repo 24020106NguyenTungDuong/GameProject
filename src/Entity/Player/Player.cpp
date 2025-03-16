@@ -5,27 +5,44 @@
 void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &mouseState,int mouseX,int mouseY,Projectile &slashProjectile, float timeAcumulator,camera Cam)
 {
 
-
-    if(!(keystates[SDL_SCANCODE_A]||keystates[SDL_SCANCODE_D]||keystates[SDL_SCANCODE_LSHIFT]))
-        velocity.x=0;
-                SDL_Rect dst;
+    SDL_Rect dst;
 	dst.x=position.x-Cam.viewPortion.x;
 	dst.y=position.y-Cam.viewPortion.y;
 	dst.w=currentFrame.w * entityScalar;
 	dst.h=currentFrame.h * entityScalar;
     float dx = mouseX - screenWidth/2;
-    float dy = mouseY - (position.y+entityScalar*currentFrame.h/2);
+    float dy = mouseY - centerEntity().y;
+    vector2f dashVector=vector2f(dx,dy);
+    dashVector.normalise();
+    float currentTime=utils::getTimeSeconds();
+
+       if(currentState!=ImmuneDame)
+   {
+       immunityStartTime=currentTime;
+   }
+   else if(currentTime-immunityStartTime>immunityTime)
+   {
+       currentState=StandingStill;
+       velocity.x=0;
+   }
 
 
-    if(isAirborne&&isSlashing)
+    if(currentState==ImmuneDame) goto Movement;
+
+
+    if(!(keystates[SDL_SCANCODE_A]||keystates[SDL_SCANCODE_D]))
+        velocity.x=0;
+
+
+
+    if(isAirborne&&isSlashing&&velocity.y>0)
     velocity.y=slashFallSpeed;
 
 
-    float currentTime=utils::getTimeSeconds();
 
 
-     vector2f dashVector=vector2f(dx,dy);
-    dashVector.normalise();
+
+
 
 
    if((mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT))&&!isDashing&&!isDashCooldown)
@@ -37,9 +54,13 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
         slashProjectile.spawnTime = currentTime;
        dashStartTime=currentTime;
        velocity={0,0};
-        rotateAngle=atan2(dy,dx)*180.0/M_PI;
+        rotateAngle=atan2(dy,dx)*180.0f/M_PI;
         spriteFlip=SDL_FLIP_NONE;
    }
+
+
+
+
 
    if(isDashing)
    {
@@ -77,7 +98,6 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
     }
 
 
-
     if(!isAirborne)
         jumpStartTime=currentTime;
     if(keystates[SDL_SCANCODE_SPACE]&&currentTime-jumpStartTime<=jumpTimer)
@@ -95,7 +115,12 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
     if(velocity.x==0)
         currentState=StandingStill;
 
-    if(velocity.y<0)
+        if(position.y>screenHeight)
+        {
+            velocity.y=2*JumpForce;
+            HP--;
+        }
+        if(velocity.y<0)
         currentState=Jumping;
     else if(velocity.y>0)
         currentState=Falling;

@@ -18,11 +18,14 @@ public:
     }
     void Move();
     bool checkCollision(const SDL_Rect& dstTile);
+    bool checkEntityCollision(Entity p_entity);
+    bool isOnPlatform(int p_mapTile[][mapTileWidth]);
+    bool canPassThroughPlatform=0;
     void checkTileCollision(int p_mapTile[][mapTileWidth]);
     void handleColision(const SDL_Rect& dstTile,int tileType);
-    bool isOnPlatform(int p_mapTile[][mapTileWidth]);
     float rightSide();
     float botSide();
+    vector2f centerEntity();
 
 public:
 int chunkNumber=0;
@@ -35,6 +38,8 @@ int animationRow;
 float rotateAngle;
 SDL_Point rotateCenter;
 SDL_RendererFlip  spriteFlip;
+int HP;
+float immunityStartTime;
 private:
     SDL_Texture* texture;
 };

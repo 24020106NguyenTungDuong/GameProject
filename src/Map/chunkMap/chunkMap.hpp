@@ -5,6 +5,7 @@
 #include "tileMap.hpp"
 #include "constants.hpp"
 #include "Player.hpp"
+#include "Enemy.hpp"
 using namespace std;
 const int inLeft=-1;
 const int inCenter=0;
@@ -13,7 +14,7 @@ static int leftMap[mapTileHeight][mapTileWidth];
 static int centerMap[mapTileHeight][mapTileWidth];
 static int rightMap[mapTileHeight][mapTileWidth];
 
- static string mapList[4]={"res/mapList/map1.txt","res/mapList/map2.txt","res/mapList/map3.txt","res/mapList/map4.txt"};
+ static string mapList[numberOfMaps]={"res/mapList/map1.txt","res/mapList/map2.txt","res/mapList/map3.txt","res/mapList/map4.txt"};
 static vector <tileMap> leftChunk;
 static vector <tileMap> centerChunk;
 static vector <tileMap> rightChunk;

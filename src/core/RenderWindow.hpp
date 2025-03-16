@@ -10,7 +10,7 @@
 class RenderWindow
 {
     public:
-        RenderWindow(const char* title,int p_width,int p_height);
+        RenderWindow  (const char* title,int p_width,int p_height);
         SDL_Texture* LoadTexture(const char* p_FilePath);
         void renderChunk(camera p_camera,vector <tileMap>& leftChunk,vector <tileMap>& centerChunk,vector <tileMap>&rightChunk);
         //GameLoop
@@ -22,11 +22,13 @@ class RenderWindow
         void RenderMap(tileMap& p_tileMap,camera p_cam);
         void Display();
         SDL_Renderer* &getRenderer();
-
-
+        void renderBackGround();
     private:
         SDL_Renderer* renderer;
         SDL_Window* window;
+        SDL_Texture* background;
+        SDL_Texture* cursor;
+        int backgroundType;
 };
 void gameLoop();
 #endif // RENDERWINDOW_HPP

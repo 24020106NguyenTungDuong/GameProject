@@ -31,7 +31,13 @@ struct vector2f
 inline float distance(vector2f a,vector2f b)
 {
 
-    return sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y)*(b.y));
+    return sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));
 
+}
+inline sign(float x)
+{
+    x=int(x);
+    if(x==0) return 0;
+    return std::abs(x)/x;
 }
 #endif // MATH_HPP

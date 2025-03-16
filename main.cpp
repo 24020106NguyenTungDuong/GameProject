@@ -17,10 +17,6 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-
-    inputMap(centerMap,mapList[0]);
-    inputMap(rightMap,mapList[rand()%4]);
-    inputMap(leftMap,mapList[rand()%4]);
     srand(time(0));
     if(SDL_Init(SDL_INIT_VIDEO)!=0)
     {
@@ -30,12 +26,18 @@ int main(int argc, char *argv[])
     {
         cout<<"IMG_Init failed. Error:"<<IMG_GetError()<<endl;
     }
+
+    inputMap(centerMap,mapList[0]);
+    inputMap(rightMap,mapList[rand()%numberOfMaps]);
+    inputMap(leftMap,mapList[rand()%numberOfMaps]);
+
     RenderWindow window("Game 1",screenWidth,screenHeight);
     SDL_Texture* testTexture=window.LoadTexture("res/graphics/playerSprite/player24 - Copy.png");
-    SDL_Texture* slashTexture=window.LoadTexture("res/graphics/playerSprite/slash - Copy.png");
+    SDL_Texture* slashTexture=window.LoadTexture("res/graphics/playerSprite/slash.png");
+    SDL_Texture* Cursor=window.LoadTexture("res/graphics/playerSprite/cursor.png");
 
 
-    Player player0(vector2f(9650,500),playerWidth,playerHeight,testTexture);
+    Player player0(vector2f(9680,500),playerWidth,playerHeight,testTexture);
     Projectile slashing(vector2f(0,0),slashWidth,slashHeight,slashTexture);
 
     Player player1=player0;
@@ -54,10 +56,7 @@ int main(int argc, char *argv[])
         loadChunk(leftMap,greenBrick,platform,leftChunk,-1,player0.chunkNumber);
 
 
-    SDL_Texture* enemy=window.LoadTexture("res/graphics/EnemySprite/1.png");
-    Enemy enemy0=Enemy(vector2f(10000,559),24,24,enemy);
-    Enemy enemy1=enemy0;
-
+    SDL_Texture* enemy=window.LoadTexture("res/graphics/EnemySprite/0.png");
     bool gameRunning=1;
     bool pause=0;
 
@@ -79,9 +78,7 @@ int main(int argc, char *argv[])
 
         }
         if(pause==1) continue;
-
         //get time
-
         currentTime = utils::getTimeSeconds();
         timeAcumulator += currentTime-startLoopTime;
         startLoopTime = currentTime;
@@ -95,8 +92,25 @@ int main(int argc, char *argv[])
 
         player0.updatePlayer(keystates,event, mouseState,mouseX,mouseY, slashing ,timeAcumulator,Cam);
 
-        enemy0.updateEnemy(player0,currentTime,timeAcumulator);
-        enemy1.updateEnemy(player0,currentTime,timeAcumulator);
+        for(vector <Enemy>::iterator it=Enemies.begin();it!= Enemies.end();)
+            {
+                if (it->HP<=0||abs(it->chunkNumber-player0.chunkNumber)>1)
+                        {
+                            it=Enemies.erase(it);
+                        }
+                        else
+                        {
+                            ++it;
+                        }
+            }
+
+          for(int i=0;i<Enemies.size();i++)
+        {
+            Enemies[i].collisionPlayer(player0,slashing);
+            Enemies[i].updateEnemy(player0,currentTime,timeAcumulator);
+
+            //if(player0.HP<=0) gameRunning=0;
+        }
         //updateRightMap when enter new right map
         if(int(player0.position.x/screenWidth)>player0.chunkNumber)
             {player0.chunkNumber++;
@@ -104,8 +118,25 @@ int main(int argc, char *argv[])
                 swap(centerChunk,leftChunk);
                 swap(centerMap,rightMap);
                 swap(centerChunk,rightChunk);
-    inputMap(rightMap,mapList[rand()%4]);
+    inputMap(rightMap,mapList[rand()%numberOfMaps]);
         loadChunk(rightMap,greenBrick,platform,rightChunk,1,player0.chunkNumber);
+                        //spawn Enemy when enter new right map
+                         for(int y=1;y<mapTileHeight-1;y++)
+                            for(int x=1;x<mapTileWidth-1;x++)
+                            {
+                                if(rightMap[y][x]!=0&&rightMap[y-1][x-1]==0&&rightMap[y-1][x]==0&&rightMap[y-1][x+1]==0)
+                                if(rand()%100<= spawnRate*100)
+                                {
+                                    vector2f newEnemyPosition;
+                                    newEnemyPosition.x=x*tileSize+(player0.chunkNumber+1)*screenWidth;
+                                    newEnemyPosition.y=y*tileSize-entityScalar*enemyHeight;
+                                    Enemies.push_back(Enemy(newEnemyPosition,enemyWidth,enemyHeight,enemy));
+                                    if(x+5<mapTileWidth) x+=5;
+                                    else break;
+                                }
+
+
+                            }
             }
         //updateLeftMap when enter new left map
          if(int(player0.position.x/screenWidth)<player0.chunkNumber)
@@ -115,24 +146,29 @@ int main(int argc, char *argv[])
                 swap(leftChunk,centerChunk);
                 swap(leftMap,rightMap);
                 swap(leftChunk,rightChunk);
-                inputMap(leftMap,mapList[rand()%4]);
+                inputMap(leftMap,mapList[rand()%numberOfMaps]);
                 loadChunk(leftMap,greenBrick,platform,leftChunk,-1,player0.chunkNumber);
             }
 
+
+
         player0.checkTileCollision(centerMap);
-
-
-        enemy0.keepOnPlatForm(player0,leftMap,centerMap,rightMap);
 
         slashing.updateProj(timeAcumulator);
 
         Cam.updateCamera(player0);
 
         window.ClearScreen();
+        window.renderBackGround();
         window.renderChunk(Cam,leftChunk,centerChunk,rightChunk);
         window.RenderTexture(player0,Cam);
-        window.RenderTexture(enemy0,Cam);
-        //window.RenderTexture(enemy1,Cam);
+
+                for(int i=0;i<Enemies.size();i++)
+        {
+            Enemies[i].keepOnPlatForm(player0,leftMap,centerMap,rightMap);
+            window.RenderTexture(Enemies[i],Cam);
+        }
+
         if(slashing.active) window.RenderTexture(slashing,Cam);
         window.Display();
         SDL_Delay(1000/FPS);

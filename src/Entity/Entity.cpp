@@ -39,29 +39,27 @@ float Entity::rightSide()
 
 
 }
+vector2f Entity::centerEntity()
+{
+    return {position.x+entityScalar*currentFrame.w/2,position.y+entityScalar*currentFrame.h/2};
+}
 bool Entity::checkCollision(const SDL_Rect& dstTile)
 {
-
-
       return !(rightSide()<dstTile.x      ||
             position.x>dstTile.x+tileSize ||
             botSide()<=dstTile.y          ||
             position.y>=dstTile.y+tileSize);
-
-//        return position.x<dstTile.x+tileSize&& rightSide()>dstTile.x
-//            && position.y<dstTile.y+tileSize && botSide()> dstTile.y;
-
 }
+bool Entity::checkEntityCollision(Entity p_entity)
+{
+    return !(rightSide()<p_entity.position.x     ||
+            position.x>p_entity.rightSide() ||
+            botSide()<=p_entity.position.y          ||
+            position.y>=p_entity.botSide());
+}
+
 void Entity::handleColision(const SDL_Rect& dstTile,int tileType)
 {
-
-
-
-
-
-
-
-
 
     //Huong va cham
     float left=rightSide()-dstTile.x;
@@ -106,9 +104,12 @@ void Entity::handleColision(const SDL_Rect& dstTile,int tileType)
     {
         if(minCollision==top&&velocity.y>0)
     {
+
+
         position.y=dstTile.y-entityScalar*currentFrame.h-1;
         velocity.y=0;
         isAirborne=0;
+
     }
 
     }

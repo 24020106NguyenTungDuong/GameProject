@@ -9,13 +9,13 @@
 #include "Projectile.hpp"
 
 
-enum PlayerState { StandingStill, Running, Jumping, Falling ,Dashing};
+enum PlayerState { StandingStill, Running, Jumping, Falling ,Dashing, ImmuneDame};
 class Player: public Entity
 {
     public:
 
     Player(vector2f p_position,int entityWidth,int entityHeight,SDL_Texture* p_texture)
-    :Entity(p_position,entityWidth,entityHeight,p_texture){}
+    :Entity(p_position,entityWidth,entityHeight,p_texture){HP=playerHP;};
     bool isDashing=0;
     bool isSlashing=0;
     bool isDashCooldown=0;
