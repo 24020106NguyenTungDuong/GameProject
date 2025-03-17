@@ -92,28 +92,34 @@ void Enemy::collisionPlayer(Player &p_player,Projectile p_slash)
       if(p_player.isSlashing&&checkSlashCollision(p_player,p_slash))
     {
             velocity.x=2.0f*MoveSpeed*sign(position.x-p_player.position.x);
-            p_player.velocity.x=0;
             HP--;
             immuneDame=1;
     }
+    if(checkEntityCollision(p_player)&&p_player.currentState==Falling )
+    {
+         velocity.x=0;
+            HP--;
+            immuneDame=1;
+        p_player.velocity.y=JumpForce;
+    }
+
 
     if(!immuneDame)
     {
     if(checkEntityCollision(p_player)&&p_player.currentState==Dashing)
-    {
+        {
         HP=0;
         return;
-    }
+        }
     if(checkEntityCollision(p_player)&&p_player.currentState!=ImmuneDame)
-    {
+        {
         p_player.velocity.x=enemyPushX*sign(velocity.x);
         p_player.velocity.y=enemyPushY;
         p_player.isAirborne=1;
         p_player.currentState=ImmuneDame;
         p_player.HP--;
-        cout<<p_player.HP<<'\n';
         velocity.x=-velocity.x;
-    }
+        }
     }
 
 

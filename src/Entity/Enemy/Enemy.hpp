@@ -11,6 +11,7 @@ class Enemy: public Entity
     Enemy(vector2f p_position,int entityWidth,int entityHeight,SDL_Texture* p_texture)
     :Entity(p_position,entityWidth,entityHeight,p_texture){HP=enemyHP;
                                                             chunkNumber=position.x/screenWidth;
+                                                            immuneDame=0;
                                                             };
     bool immuneDame;
     bool isAttacking;

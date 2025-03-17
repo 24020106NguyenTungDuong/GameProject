@@ -26,6 +26,7 @@
 					<Add directory="src/Map" />
 					<Add directory="src/Camera" />
 					<Add directory="src/Entity/Enemy" />
+					<Add directory="src/TextRender" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -48,6 +49,7 @@
 					<Add directory="src/Map" />
 					<Add directory="src/Camera" />
 					<Add directory="src/Entity/Enemy" />
+					<Add directory="src/TextRender" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -61,12 +63,25 @@
 		<Unit filename="include/constants.cpp" />
 		<Unit filename="include/constants.hpp" />
 		<Unit filename="main.cpp" />
-		<Unit filename="res/graphics/Screenshot 2025-02-14 200933.png" />
-		<Unit filename="res/graphics/common_0.png" />
+		<Unit filename="res/font/8bitOperatorPlus-Regular.ttf" />
+		<Unit filename="res/graphics/EnemySprite/0.png" />
+		<Unit filename="res/graphics/EnemySprite/common_8.png" />
+		<Unit filename="res/graphics/EnemySprite/groundType.png" />
+		<Unit filename="res/graphics/playerSprite/cursor.png" />
+		<Unit filename="res/graphics/playerSprite/player24 - Copy - Copy.png" />
+		<Unit filename="res/graphics/playerSprite/player24 - Copy.png" />
+		<Unit filename="res/graphics/playerSprite/player24.png" />
+		<Unit filename="res/graphics/playerSprite/player32.png" />
+		<Unit filename="res/graphics/playerSprite/playerSprite.png" />
+		<Unit filename="res/graphics/playerSprite/slash.png" />
 		<Unit filename="res/graphics/tileMap/Blue_Brick.png" />
 		<Unit filename="res/graphics/tileMap/Green_Brick.png" />
 		<Unit filename="res/graphics/tileMap/Pink_Brick.png" />
 		<Unit filename="res/mapList/map1.txt" />
+		<Unit filename="res/mapList/map2.txt" />
+		<Unit filename="res/mapList/map3.txt" />
+		<Unit filename="res/mapList/map4.txt" />
+		<Unit filename="res/mapList/map5.txt" />
 		<Unit filename="src/Camera/camera.cpp" />
 		<Unit filename="src/Camera/camera.hpp" />
 		<Unit filename="src/Entity/Enemy/Enemy.cpp" />

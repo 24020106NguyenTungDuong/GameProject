@@ -12,7 +12,7 @@ RenderWindow::RenderWindow(const char* title,int p_width,int p_height)
     window=SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,p_width,p_height,SDL_WINDOW_SHOWN);
     if(window==NULL)
         std::cout<<"Window failed to innit. Error:"<<SDL_GetError<<std::endl;
-    renderer=SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    renderer=SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED );
     if(renderer==NULL)
         std::cout<<"Renderer failed to innit. Error:"<<SDL_GetError<<std::endl;
     background=LoadTexture("res/graphics/background/background.png");
@@ -22,6 +22,8 @@ RenderWindow::RenderWindow(const char* title,int p_width,int p_height)
     if(cursor==NULL)
         std::cout<<"Cursor render failed"<<std::endl;
         backgroundType=rand()%4;
+        font=TTF_OpenFont("res/font/8bitOperatorPlus-Regular.ttf",textSize);
+
 }
 
 SDL_Texture* RenderWindow::LoadTexture(const char* p_FilePath)
@@ -37,6 +39,8 @@ SDL_Texture* RenderWindow::LoadTexture(const char* p_FilePath)
 }
 void RenderWindow::CleanUp()
 {
+    TTF_CloseFont(font);
+    TTF_Quit();
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
@@ -59,6 +63,30 @@ void RenderWindow::renderBackGround()
     dst.h=screenHeight;
     SDL_RenderCopy(renderer,background,&src,&dst);
 }
+void RenderWindow::renderCursor(int mouseX,int mouseY)
+{
+    SDL_Rect dst;
+    dst.x=mouseX-16;
+    dst.y=mouseY-16;
+    dst.w=32;
+    dst.h=32;
+    SDL_RenderCopy(renderer,cursor,NULL,&dst);
+
+}
+void RenderWindow::renderText(const char* text,vector2f textPosition,SDL_Color textColor)
+{
+
+    SDL_Surface* textSurface=TTF_RenderText_Solid(font,text,textColor);
+    SDL_Texture* textTexture=SDL_CreateTextureFromSurface(renderer,textSurface);
+    SDL_Rect textRect={textPosition.x,textPosition.y,0,0};
+    textRect.w=textSurface->w;
+    textRect.h=textSurface->h;
+    SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
+    SDL_FreeSurface(textSurface);
+    SDL_DestroyTexture(textTexture);
+
+}
+
 void RenderWindow::RenderTexture(Entity& p_entity,camera& p_cam)
 {
     SDL_Rect src;
@@ -73,8 +101,6 @@ void RenderWindow::RenderTexture(Entity& p_entity,camera& p_cam)
 	dst.w=p_entity.currentFrame.w * entityScalar;
 	dst.h=p_entity.currentFrame.h * entityScalar;
 
-//    if(p_entity.position.x+dst.w<p_cam.viewPortion.x || p_entity.position.x>p_cam.viewPortion.x+screenWidth) return;
-//    if(dst.y+dst.h<p_cam.viewPortion.y || dst.y>p_cam.viewPortion.y+screenHeight) return;
 
     SDL_RenderCopyEx(renderer, p_entity.getTexture(),&src,&dst,p_entity.rotateAngle,&p_entity.rotateCenter,p_entity.spriteFlip);
 }

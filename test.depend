@@ -1,9 +1,11 @@
 # depslib dependency file v1.0
-1742134346 source:c:\users\home\desktop\test123\test\main.cpp
+1742222946 source:c:\users\home\desktop\test123\test\main.cpp
 	<iostream>
 	<SDL.h>
+	<SDL_ttf.h>
 	<SDL_image.h>
 	<vector>
+	<string>
 	<ctime>
 	"RenderWindow.hpp"
 	"Entity.hpp"
@@ -19,16 +21,17 @@
 
 1739625062 c:\users\home\desktop\test123\test\src\core\engine.h
 
-1742132717 c:\users\home\desktop\test123\test\src\core\renderwindow.hpp
+1742218052 c:\users\home\desktop\test123\test\src\core\renderwindow.hpp
 	<SDL.h>
 	<SDL_image.h>
+	<SDL_ttf.h>
 	"Entity.hpp"
 	"constants.hpp"
 	"tileMap.hpp"
 	"camera.hpp"
 	"chunkMap/chunkMap.hpp"
 
-1742131848 source:c:\users\home\desktop\test123\test\src\core\renderwindow.cpp
+1742222468 source:c:\users\home\desktop\test123\test\src\core\renderwindow.cpp
 	<SDL.h>
 	<SDL_image.h>
 	<iostream>
@@ -66,7 +69,7 @@
 1739856071 source:c:\users\home\desktop\test123\test\src\math\math.cpp
 	"math.hpp"
 
-1742048716 c:\users\home\desktop\test123\test\src\math\math.hpp
+1742173867 c:\users\home\desktop\test123\test\src\math\math.hpp
 	<cmath>
 
 1740725797 source:c:\users\home\desktop\test123\test\src\utils\utils.cpp
@@ -79,7 +82,7 @@
 
 1739858139 c:\users\home\desktop\test123\test\\constants.hpp
 
-1742136093 c:\users\home\desktop\test123\test\include\constants.hpp
+1742222732 c:\users\home\desktop\test123\test\include\constants.hpp
 	"math.hpp"
 	<string>
 
@@ -93,7 +96,7 @@
 	<SDL.h>
 	<SDL_image.h>
 
-1742135901 source:c:\users\home\desktop\test123\test\src\entity\player\player.cpp
+1742215932 source:c:\users\home\desktop\test123\test\src\entity\player\player.cpp
 	"Player.hpp"
 	"constants.hpp"
 	"utils.hpp"
@@ -129,7 +132,7 @@
 1740706952 source:c:\users\home\desktop\test123\test\src\map\tilemap.cpp
 	"tileMap.hpp"
 
-1740923953 c:\users\home\desktop\test123\test\src\map\tilemap.hpp
+1742201650 c:\users\home\desktop\test123\test\src\map\tilemap.hpp
 	<SDL.h>
 	"math.h"
 	"constants.hpp"
@@ -142,7 +145,7 @@
 	"constants.hpp"
 	"Entity.hpp"
 
-1742122364 source:c:\users\home\desktop\test123\test\src\map\chunkmap\chunkmap.cpp
+1742201650 source:c:\users\home\desktop\test123\test\src\map\chunkmap\chunkmap.cpp
 	"chunkMap.hpp"
 
 1742135018 c:\users\home\desktop\test123\test\src\map\chunkmap\chunkmap.hpp
@@ -153,10 +156,10 @@
 	"Player.hpp"
 	"Enemy.hpp"
 
-1742134397 source:c:\users\home\desktop\test123\test\src\entity\enemy\enemy.cpp
+1742222688 source:c:\users\home\desktop\test123\test\src\entity\enemy\enemy.cpp
 	"Enemy.hpp"
 
-1742133830 c:\users\home\desktop\test123\test\src\entity\enemy\enemy.hpp
+1742208116 c:\users\home\desktop\test123\test\src\entity\enemy\enemy.hpp
 	<math.h>
 	"Entity.hpp"
 	"Player.hpp"

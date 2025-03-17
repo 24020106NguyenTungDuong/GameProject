@@ -32,9 +32,6 @@ class tileMap
 
         }
         SDL_Texture* getTexture();
-    protected:
-
-    private:
 };
 
 #endif // TILEMAP_HPP

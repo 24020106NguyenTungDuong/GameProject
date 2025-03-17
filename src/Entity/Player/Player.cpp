@@ -115,9 +115,10 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
     if(velocity.x==0)
         currentState=StandingStill;
 
-        if(position.y>screenHeight)
+        if(position.y>screenHeight-entityScalar*playerHeight/2)
         {
-            velocity.y=2*JumpForce;
+            position.y=entityScalar*playerHeight/2;
+            velocity.y=1;
             HP--;
         }
         if(velocity.y<0)
