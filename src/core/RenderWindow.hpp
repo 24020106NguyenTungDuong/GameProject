@@ -33,5 +33,4 @@ class RenderWindow
         SDL_Texture* cursor;
         int backgroundType;
 };
-void gameLoop();
 #endif // RENDERWINDOW_HPP

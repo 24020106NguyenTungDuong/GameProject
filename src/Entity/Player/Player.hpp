@@ -9,6 +9,8 @@
 #include "Projectile.hpp"
 
 
+
+
 enum PlayerState { StandingStill, Running, Jumping, Falling ,Dashing, ImmuneDame};
 class Player: public Entity
 {
@@ -19,13 +21,18 @@ class Player: public Entity
     bool isDashing=0;
     bool isSlashing=0;
     bool isDashCooldown=0;
-    float dashCooldownTime;
+    bool hasPlayedRunningSound=0;
     PlayerState currentState=StandingStill;
-    void updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &mouseState,int mouseX,int mouseY, Projectile &p_projectile , float timeAcumulator,camera Cam);
+    void updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &mouseState,int mouseX,int mouseY, Projectile &p_projectile , float timeAcumulator,camera Cam,const PlaySound &allSound);
     void updateProjectile(Projectile &p_projectile,Uint32 &mouseState);
+
+    private:
      float jumpStartTime;
     float dashStartTime;
-    private:
+    float dashCooldownTime;
+
+
 };
+//Mix_Chunk* slashSound = Mix_LoadWAV("res/SFX/slash.wav");
 
 #endif // PLAYER_HPP

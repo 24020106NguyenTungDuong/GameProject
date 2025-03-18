@@ -1,8 +1,9 @@
 # depslib dependency file v1.0
-1742222946 source:c:\users\home\desktop\test123\test\main.cpp
+1742274353 source:c:\users\home\desktop\test123\test\main.cpp
 	<iostream>
 	<SDL.h>
 	<SDL_ttf.h>
+	<SDL_mixer.h>
 	<SDL_image.h>
 	<vector>
 	<string>
@@ -13,6 +14,7 @@
 	"constants.hpp"
 	"Player.hpp"
 	"camera.hpp"
+	"PlaySound.hpp"
 	"chunkMap/chunkMap.hpp"
 	"Enemy.hpp"
 
@@ -21,7 +23,7 @@
 
 1739625062 c:\users\home\desktop\test123\test\src\core\engine.h
 
-1742218052 c:\users\home\desktop\test123\test\src\core\renderwindow.hpp
+1742263245 c:\users\home\desktop\test123\test\src\core\renderwindow.hpp
 	<SDL.h>
 	<SDL_image.h>
 	<SDL_ttf.h>
@@ -57,12 +59,14 @@
 	<SDL_image.h>
 	"math.hpp"
 
-1742133830 c:\users\home\desktop\test123\test\src\entity\entity.hpp
+1742272107 c:\users\home\desktop\test123\test\src\entity\entity.hpp
 	<SDL.h>
 	<SDL_image.h>
+	<SDL_mixer.h>
 	<iostream>
 	"utils.hpp"
 	"math.hpp"
+	"PlaySound.hpp"
 	"animation.hpp"
 	"constants.hpp"
 
@@ -82,9 +86,10 @@
 
 1739858139 c:\users\home\desktop\test123\test\\constants.hpp
 
-1742222732 c:\users\home\desktop\test123\test\include\constants.hpp
+1742274910 c:\users\home\desktop\test123\test\include\constants.hpp
 	"math.hpp"
 	<string>
+	<SDL_mixer.h>
 
 1739859921 source:c:\users\home\desktop\test123\test\include\constants.cpp
 	"constants.hpp"
@@ -96,12 +101,12 @@
 	<SDL.h>
 	<SDL_image.h>
 
-1742215932 source:c:\users\home\desktop\test123\test\src\entity\player\player.cpp
+1742274412 source:c:\users\home\desktop\test123\test\src\entity\player\player.cpp
 	"Player.hpp"
 	"constants.hpp"
 	"utils.hpp"
 
-1742133830 c:\users\home\desktop\test123\test\src\entity\player\player.hpp
+1742273721 c:\users\home\desktop\test123\test\src\entity\player\player.hpp
 	<SDL.h>
 	<cmath>
 	"Entity.hpp"
@@ -156,12 +161,20 @@
 	"Player.hpp"
 	"Enemy.hpp"
 
-1742222688 source:c:\users\home\desktop\test123\test\src\entity\enemy\enemy.cpp
+1742264104 source:c:\users\home\desktop\test123\test\src\entity\enemy\enemy.cpp
 	"Enemy.hpp"
 
-1742208116 c:\users\home\desktop\test123\test\src\entity\enemy\enemy.hpp
+1742263781 c:\users\home\desktop\test123\test\src\entity\enemy\enemy.hpp
 	<math.h>
+	"camera.hpp"
 	"Entity.hpp"
 	"Player.hpp"
 	"chunkMap/chunkMap.hpp"
+
+1742273866 source:c:\users\home\desktop\test123\test\src\playsound\playsound.cpp
+	"PlaySound.hpp"
+	<SDL_mixer.h>
+
+1742273866 c:\users\home\desktop\test123\test\src\playsound\playsound.hpp
+	<SDL_mixer.h>
 

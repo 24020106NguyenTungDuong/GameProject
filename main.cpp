@@ -2,6 +2,7 @@
 #define SDL_MAIN_HANDLED
 #include<SDL.h>
 #include<SDL_ttf.h>
+#include<SDL_mixer.h>
 #include <SDL_image.h>
 #include<vector>
 #include<string>
@@ -12,6 +13,7 @@
 #include "constants.hpp"
 #include "Player.hpp"
 #include "camera.hpp"
+#include "PlaySound.hpp"
 #include "chunkMap/chunkMap.hpp"
 #include "Enemy.hpp"
 using namespace std;
@@ -20,7 +22,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     srand(time(0));
-    if(SDL_Init(SDL_INIT_VIDEO)!=0)
+    if(SDL_Init(SDL_INIT_VIDEO)!=0||SDL_Init(SDL_INIT_AUDIO)!=0)
     {
         cout<<"SDL_Init failed. Error:"<<SDL_GetError<<endl;
         return 1;
@@ -34,14 +36,17 @@ int main(int argc, char *argv[])
         cout<<"SDL_ttf Init failed: "<<TTF_GetError()<<endl;
         return 1;
     }
-
-
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+        {
+            cout<<"SDL_mixer Init failed: "<<Mix_GetError()<<endl;
+            return 1;
+        }
     RenderWindow window("Game 1",screenWidth,screenHeight);
     SDL_Texture* testTexture=window.LoadTexture("res/graphics/playerSprite/player24 - Copy.png");
     SDL_Texture* slashTexture=window.LoadTexture("res/graphics/playerSprite/slash.png");
     SDL_Texture* Cursor=window.LoadTexture("res/graphics/playerSprite/cursor.png");
     SDL_ShowCursor(SDL_DISABLE);
-
+    PlaySound allSound;
 
     TTF_Font* font = TTF_OpenFont("res/font/8bitOperatorPlus-Regular.ttf", 24);
     if (!font) {
@@ -55,8 +60,11 @@ int main(int argc, char *argv[])
 
 
 
-
+    Mix_PlayMusic(allSound.backgroundMusic,-1);
+    Mix_VolumeMusic(musicVolume);
     GameStart:
+
+
 
         inputMap(centerMap,mapList[0]);
     inputMap(rightMap,basePath+to_string(rand()%numberOfMaps)+".txt");
@@ -78,6 +86,9 @@ int main(int argc, char *argv[])
 
 
     SDL_Texture* enemy=window.LoadTexture("res/graphics/EnemySprite/0.png");
+    SDL_Texture* wall=window.LoadTexture("res/graphics/Wall/wallOfFlesh.png");
+    Enemy wallOfFlesh(vector2f(Cam.viewPortion.x,0),wallWidth,wallHeight,wall);
+
     bool gameRunning=1;
     bool endScreen=1;
     bool pause=0;
@@ -146,8 +157,7 @@ int main(int argc, char *argv[])
 
        int mouseX, mouseY;
         Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
-
-        player0.updatePlayer(keystates,event, mouseState,mouseX,mouseY, slashing ,timeAcumulator,Cam);
+        player0.updatePlayer(keystates,event, mouseState,mouseX,mouseY, slashing ,timeAcumulator,Cam,allSound);
 
         for(vector <Enemy>::iterator it=Enemies.begin();it!= Enemies.end();)
             {
@@ -216,7 +226,6 @@ int main(int argc, char *argv[])
         player0.checkTileCollision(centerMap);
 
         slashing.updateProj(timeAcumulator);
-
         Cam.updateCamera(player0);
 
         window.ClearScreen();
@@ -230,10 +239,29 @@ int main(int argc, char *argv[])
             window.RenderTexture(Enemies[i],Cam);
         }
 
+        wallOfFlesh.updateWall(player0,timeAcumulator,Cam);
+        window.RenderTexture(wallOfFlesh,Cam);
+
         distanceTravelled=max(distanceTravelled,int(player0.position.x-playerStartPosition.x) );
         currentScore=distanceTravelled/distancePerScore+enemiesKilled*scorePerEnemy;
 
-        if(slashing.active) window.RenderTexture(slashing,Cam);
+
+
+        if(slashing.active)
+        {
+
+            window.RenderTexture(slashing,Cam);
+
+        }
+        if(player0.HP<=0) {
+                highScore=max(highScore,currentScore);
+                ofstream file("res/highscore.txt");
+               if(file)
+               {
+                   file<<highScore;
+               }
+                file.close();
+                gameRunning=0;break;}
 
 
         window.renderText( ("HP: "+to_string(player0.HP)).c_str(),HPPosition);
@@ -245,16 +273,9 @@ int main(int argc, char *argv[])
         window.renderCursor(mouseX,mouseY);
         window.Display();
 
-        if(player0.HP<=0) {
-                highScore=max(highScore,currentScore);
-                ofstream file("res/highscore.txt");
-               if(file)
-               {
-                   file<<highScore;
-               }
-                file.close();
-                gameRunning=0;break;}
+
     }
+
 
     if(endScreen)
     {window.renderText( ("Score: "+to_string(currentScore)).c_str(),scorePosition);
@@ -289,6 +310,7 @@ int main(int argc, char *argv[])
 
     EndGame:
 
+    Mix_FreeMusic(allSound.backgroundMusic);
     window.CleanUp();
 
     return 0;

@@ -1,6 +1,7 @@
 #ifndef ENEMY_HPP
 #define ENEMY_HPP
 #include<math.h>
+#include"camera.hpp"
 #include "Entity.hpp"
 #include "Player.hpp"
 #include "chunkMap/chunkMap.hpp"
@@ -18,6 +19,7 @@ class Enemy: public Entity
     bool isFollowing;
     bool isPatrolling;
     void updateEnemy(Player p_player,float currentTime,float timeAcumulator);
+    void updateWall(Player &p_player,float timeAccumulator,camera Cam);
     float patrolStartTime;
     void keepOnPlatForm(Player p_player,int leftMap[][mapTileWidth],int centerMap[][mapTileWidth],int rightMap[][mapTileWidth]);
     void collisionPlayer(Player &p_player,Projectile p_slash);

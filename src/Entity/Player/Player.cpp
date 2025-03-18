@@ -2,7 +2,7 @@
 #include "constants.hpp"
 #include "utils.hpp"
 
-void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &mouseState,int mouseX,int mouseY,Projectile &slashProjectile, float timeAcumulator,camera Cam)
+void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &mouseState,int mouseX,int mouseY,Projectile &slashProjectile, float timeAcumulator,camera Cam,const PlaySound &allSound)
 {
 
     SDL_Rect dst;
@@ -15,6 +15,7 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
     vector2f dashVector=vector2f(dx,dy);
     dashVector.normalise();
     float currentTime=utils::getTimeSeconds();
+
 
        if(currentState!=ImmuneDame)
    {
@@ -47,15 +48,17 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
 
    if((mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT))&&!isDashing&&!isDashCooldown)
    {
-        currentState=Dashing;
-       isDashing=1;
-            slashProjectile.active=1;
-        isSlashing=1;
-        slashProjectile.spawnTime = currentTime;
-       dashStartTime=currentTime;
-       velocity={0,0};
-        rotateAngle=atan2(dy,dx)*180.0f/M_PI;
-        spriteFlip=SDL_FLIP_NONE;
+    currentState=Dashing;
+    isDashing=1;
+    slashProjectile.active=1;
+    isSlashing=1;
+    slashProjectile.spawnTime = currentTime;
+    dashStartTime=currentTime;
+    velocity={0,0};
+    rotateAngle=atan2(dy,dx)*180.0f/M_PI;
+    spriteFlip=SDL_FLIP_NONE;
+
+            playSound(allSound.dashSound,SFXVolume);
    }
 
 
@@ -67,6 +70,8 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
        if(currentTime-dashStartTime>dashTimer)
        {
            isDashing=0;
+           isSlashing=0;
+           slashProjectile.active=0;
            isDashCooldown=1;
            dashCooldownTime=currentTime;
            velocity={0,0};
@@ -96,6 +101,7 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
         velocity.x=MoveSpeed;
         currentState=Running;
     }
+
 
 
     if(!isAirborne)
@@ -137,12 +143,13 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
 
 Movement:
     Move();
-    if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT) )
+    if( (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT) )&&!isSlashing)
     {
         slashProjectile.active=1;
         isSlashing=1;
         slashProjectile.spawnTime = currentTime;
 
+            playSound(allSound.slashSound,SFXVolume);
     }
 
     if(isSlashing)
@@ -158,7 +165,7 @@ Movement:
 
 
 
-    if(currentTime-slashProjectile.spawnTime>=0.2f)
+    if(currentTime-slashProjectile.spawnTime>=slashTimer)
         {
             slashProjectile.active=0;
             isSlashing=0;
@@ -173,6 +180,8 @@ Movement:
         case Running      : animationRow=1;
                             currentFrame.y=animationRow*playerHeight;
                             currentFrame.x = (int(timeAcumulator/timeStep)%6)*playerWidth;
+
+                                        playSound(allSound.runningSound,SFXVolume);
                             break;
         case Jumping      : currentFrame.y=2*playerHeight;
                             currentFrame.x=0;

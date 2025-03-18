@@ -2,6 +2,7 @@
 #define CONSTANTS_HPP_INCLUDED
 #include "math.hpp"
 #include <string>
+#include<SDL_mixer.h>
 using namespace std;
 //render constants
 const int maxFPS=60;
@@ -36,7 +37,7 @@ const float dashTimer=0.2f;
 const float dashCooldown=1.0f;
 
 const float immunityTime=0.3f;
-const float slashTimer = 1.0f;
+const float slashTimer = 0.8f;
 const float slashFallSpeed=3.0f;
 
 //size constant
@@ -46,7 +47,8 @@ const int slashWidth = 48;
 const int slashHeight = 24;
 const int enemyHeight = 24;
 const int enemyWidth = 24;
-
+const int wallWidth=105;
+const int wallHeight=screenHeight/2;
 
 
 //enemy constant
@@ -60,5 +62,8 @@ const float enemyFollowAcceleration=0.1f;
 const float attackRange=88;
 const float attackAngle=60;
 const float spawnRate=0.2f;
+//music const
+const int musicVolume=8;
+const int SFXVolume=64;
 
 #endif // CONSTANTS_HPP_INCLUDED

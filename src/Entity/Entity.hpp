@@ -2,9 +2,11 @@
 #define ENTITY_HPP
 #include<SDL.h>
 #include <SDL_image.h>
+#include<SDL_mixer.h>
 #include <iostream>
 #include "utils.hpp"
 #include "math.hpp"
+#include "PlaySound.hpp"
 #include "animation.hpp"
 #include "constants.hpp"
 class Entity

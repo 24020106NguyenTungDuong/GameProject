@@ -27,6 +27,7 @@
 					<Add directory="src/Camera" />
 					<Add directory="src/Entity/Enemy" />
 					<Add directory="src/TextRender" />
+					<Add directory="src/PlaySound" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -50,6 +51,7 @@
 					<Add directory="src/Camera" />
 					<Add directory="src/Entity/Enemy" />
 					<Add directory="src/TextRender" />
+					<Add directory="src/PlaySound" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -63,6 +65,14 @@
 		<Unit filename="include/constants.cpp" />
 		<Unit filename="include/constants.hpp" />
 		<Unit filename="main.cpp" />
+		<Unit filename="res/Sound/MDK-Critical Hit.mp3" />
+		<Unit filename="res/Sound/Music/MDK-Critical Hit.mp3" />
+		<Unit filename="res/Sound/Music/Pocket Universe - Context Sensitive.mp3" />
+		<Unit filename="res/Sound/SFX/dash.WAV" />
+		<Unit filename="res/Sound/SFX/fall.WAV" />
+		<Unit filename="res/Sound/SFX/jump.WAV" />
+		<Unit filename="res/Sound/SFX/slash.wav" />
+		<Unit filename="res/Sound/SFX/walk.WAV" />
 		<Unit filename="res/font/8bitOperatorPlus-Regular.ttf" />
 		<Unit filename="res/graphics/EnemySprite/0.png" />
 		<Unit filename="res/graphics/EnemySprite/common_8.png" />
@@ -99,6 +109,8 @@
 		<Unit filename="src/Map/tileMap.hpp" />
 		<Unit filename="src/Math/math.cpp" />
 		<Unit filename="src/Math/math.hpp" />
+		<Unit filename="src/PlaySound/PlaySound.cpp" />
+		<Unit filename="src/PlaySound/PlaySound.hpp" />
 		<Unit filename="src/Utils/utils.cpp" />
 		<Unit filename="src/Utils/utils.hpp" />
 		<Unit filename="src/core/RenderWindow.cpp" />
