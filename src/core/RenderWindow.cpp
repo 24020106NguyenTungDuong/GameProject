@@ -63,6 +63,11 @@ void RenderWindow::renderBackGround()
     dst.h=screenHeight;
     SDL_RenderCopy(renderer,background,&src,&dst);
 }
+void RenderWindow::renderPNG(SDL_Texture* img)
+{
+    SDL_RenderCopy(renderer,img,NULL,NULL);
+
+}
 void RenderWindow::renderCursor(int mouseX,int mouseY)
 {
     SDL_Rect dst;

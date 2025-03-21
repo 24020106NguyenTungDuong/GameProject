@@ -62,6 +62,8 @@ int main(int argc, char *argv[])
 
     Mix_PlayMusic(allSound.backgroundMusic,-1);
     Mix_VolumeMusic(musicVolume);
+    bool inMenu=1;
+
     GameStart:
 
 
@@ -78,15 +80,17 @@ int main(int argc, char *argv[])
 
     SDL_Texture* greenBrick=window.LoadTexture("res/graphics/tileMap/solidTile.png");
     SDL_Texture* platform=window.LoadTexture("res/graphics/tileMap/platform.png");
-
+    SDL_Texture* pausecreen=window.LoadTexture("res/graphics/blank.png");
+    SDL_Texture* Menu=window.LoadTexture("res/graphics/menu.png");
 
      loadChunk(centerMap,greenBrick,platform,centerChunk,0,player0.chunkNumber);
         loadChunk(rightMap,greenBrick,platform,rightChunk,1,player0.chunkNumber);
         loadChunk(leftMap,greenBrick,platform,leftChunk,-1,player0.chunkNumber);
 
 
-    SDL_Texture* enemy=window.LoadTexture("res/graphics/EnemySprite/0.png");
-    SDL_Texture* wall=window.LoadTexture("res/graphics/Wall/wallOfFlesh.png");
+    SDL_Texture* groundType=window.LoadTexture("res/graphics/EnemySprite/groundType.png");
+    SDL_Texture* flyType=window.LoadTexture("res/graphics/EnemySprite/flyType.png");
+    SDL_Texture* wall=window.LoadTexture("res/graphics/Wall/wall3.png");
     Enemy wallOfFlesh(vector2f(Cam.viewPortion.x,0),wallWidth,wallHeight,wall);
 
     bool gameRunning=1;
@@ -98,6 +102,7 @@ int main(int argc, char *argv[])
     int highScore=0;
     int enemiesKilled=0;
     int distanceTravelled=0;
+    float FPSadjust=-3;
     ifstream file("res/highScore.txt");
     if(file)
     {
@@ -129,9 +134,29 @@ int main(int argc, char *argv[])
                 }
                 if(pause&&event.type==SDL_KEYDOWN&&event.key.keysym.sym==SDLK_r)
                     goto GameStart;
+                if(inMenu&&event.type==SDL_KEYDOWN)
+                    switch(event.key.keysym.sym)
+                {case SDLK_r:
+                    inMenu=0;
+                    break;
+                case  SDLK_ESCAPE:
+                    goto EndGame;
+                };
+
+        }
+        if(inMenu)
+        {
+            window.renderPNG(Menu);
+            window.renderText("Press R to start",vector2f(100,screenHeight-96));
+            window.renderText("Press ESC to exit",vector2f(100,screenHeight-72));
+            window.Display();
+            continue;
+
 
         }
         if(pause==1) {
+
+                window.renderPNG(pausecreen);
                 window.renderText("Press ESC to resume",vector2f(screenWidth/2-100,screenHeight/2));
                 window.renderText("Press R to restart",vector2f(screenWidth/2-100,screenHeight/2+24));
                 window.Display();
@@ -140,22 +165,21 @@ int main(int argc, char *argv[])
 
         currentTime=utils::getTimeSeconds();
         frameTime=currentTime-startLoopTime;
-        if(frameTime<frameDelay)
-        {
-            SDL_Delay(frameDelay-frameTime);
-        }
         frameTime=currentTime-startLoopTime;
         timeAcumulator+=frameTime;
         startLoopTime=currentTime;
         frameCount++;
-        if(timeAcumulator>=1.0f) {timeAcumulator-=1.0f;
+        if(timeAcumulator>=1.0f) {
+                                    timeAcumulator-=1.0f;
                                     currentFPS=frameCount;
                                     frameCount=0;
+                                            if(currentFPS<60) FPSadjust-=0.5f;
+                                            else if(currentFPS>70) FPSadjust+=0.05f;
                                     }
 
-        const Uint8* keystates = SDL_GetKeyboardState(NULL);
+        const Uint8* keystates=SDL_GetKeyboardState(NULL);
 
-       int mouseX, mouseY;
+        int mouseX, mouseY;
         Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
         player0.updatePlayer(keystates,event, mouseState,mouseX,mouseY, slashing ,timeAcumulator,Cam,allSound);
 
@@ -191,7 +215,7 @@ int main(int argc, char *argv[])
     inputMap(rightMap,basePath+to_string(rand()%numberOfMaps)+".txt");
         loadChunk(rightMap,greenBrick,platform,rightChunk,1,player0.chunkNumber);
                         //spawn Enemy when enter new right map
-                         for(int y=1;y<mapTileHeight-1;y++)
+                         for(int y=1;y<mapTileHeight;y++)
                             for(int x=1;x<mapTileWidth-1;x++)
                             {
                                 if(rightMap[y][x]!=0
@@ -201,9 +225,23 @@ int main(int argc, char *argv[])
                                     vector2f newEnemyPosition;
                                     newEnemyPosition.x=x*tileSize+(player0.chunkNumber+1)*screenWidth;
                                     newEnemyPosition.y=y*tileSize-entityScalar*enemyHeight;
-                                    Enemies.push_back(Enemy(newEnemyPosition,enemyWidth,enemyHeight,enemy));
+                                    Enemies.push_back(Enemy(newEnemyPosition,enemyWidth,enemyHeight,groundType,ground));
                                     if(x+7<mapTileWidth) x+=7;
                                     else break;
+                                }
+
+                                if(rightMap[y-1][x-1]==0&&rightMap[y-1][x]==0&&rightMap[y-1][x+1]==0
+                                &&rightMap[y][x-1]==0&&rightMap[y][x]==0&&rightMap[y][x+1]==0
+                                &&rightMap[y+1][x-1]==0&&rightMap[y+1][x]==0&&rightMap[y+1][x+1]==0
+                                   )
+                                {
+                                    if(rand()%1000<2)
+                                    {
+                                        vector2f newEnemyPosition;
+                                    newEnemyPosition.x=x*tileSize+(player0.chunkNumber+1)*screenWidth;
+                                    newEnemyPosition.y=y*tileSize-entityScalar*enemyHeight;
+                                    Enemies.push_back(Enemy(newEnemyPosition,enemyWidth,enemyHeight,flyType,fly));
+                                    }
                                 }
 
 
@@ -235,7 +273,7 @@ int main(int argc, char *argv[])
 
                 for(int i=0;i<Enemies.size();i++)
         {
-            Enemies[i].keepOnPlatForm(player0,leftMap,centerMap,rightMap);
+            Enemies[i].collisionMap(player0,leftMap,centerMap,rightMap);
             window.RenderTexture(Enemies[i],Cam);
         }
 
@@ -273,15 +311,18 @@ int main(int argc, char *argv[])
         window.renderCursor(mouseX,mouseY);
         window.Display();
 
+        SDL_Delay(frameDelay+FPSadjust);
 
     }
 
 
     if(endScreen)
-    {window.renderText( ("Score: "+to_string(currentScore)).c_str(),scorePosition);
+    {
+    window.renderPNG(pausecreen);
+    window.renderText( ("Score: "+to_string(currentScore)).c_str(),scorePosition);
     window.renderText( ("Highscore: "+to_string(highScore)).c_str(),highScorePosition);
     window.renderText("Game over.",vector2f{380,280});
-    window.renderText("Press SPACE to replay or ESC to exit the game",vector2f{200,320});
+    window.renderText("Press R to replay or ESC to exit the game",vector2f{200,320});
     window.Display();
     }
 
@@ -299,7 +340,7 @@ int main(int argc, char *argv[])
             {
                 if(event.key.keysym.sym==SDLK_ESCAPE)
                     goto EndGame;
-                if(event.key.keysym.sym==SDLK_SPACE)
+                if(event.key.keysym.sym==SDLK_r)
                 goto GameStart;
             }
         }

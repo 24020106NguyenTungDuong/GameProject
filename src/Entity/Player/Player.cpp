@@ -125,7 +125,7 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
         {
             position.y=entityScalar*playerHeight/2;
             velocity.y=1;
-            HP--;
+            HP-=voidDame;
         }
         if(velocity.y<0)
         currentState=Jumping;

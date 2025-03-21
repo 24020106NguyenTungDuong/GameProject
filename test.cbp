@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/test" prefix_auto="1" extension_auto="1" />
+				<Option output="game" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -31,7 +31,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/test" prefix_auto="1" extension_auto="1" />
+				<Option output="game" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -71,7 +71,7 @@
 		<Unit filename="res/Sound/SFX/dash.WAV" />
 		<Unit filename="res/Sound/SFX/fall.WAV" />
 		<Unit filename="res/Sound/SFX/jump.WAV" />
-		<Unit filename="res/Sound/SFX/slash.wav" />
+		<Unit filename="res/Sound/SFX/slash.WAV" />
 		<Unit filename="res/Sound/SFX/walk.WAV" />
 		<Unit filename="res/font/8bitOperatorPlus-Regular.ttf" />
 		<Unit filename="res/graphics/EnemySprite/0.png" />

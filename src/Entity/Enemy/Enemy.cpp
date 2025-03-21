@@ -11,43 +11,75 @@ void Enemy::updateEnemy(Player p_player,float currentTime,float timeAcumulator)
        immuneDame=0;
    }
    if(immuneDame)  goto Movement;
-    if(distance(position,p_player.position)<=enemyDetectRange*tileSize)
-        isFollowing=1;
-    else isFollowing=0;
-    if(isFollowing)
-    {
-        if(abs(velocity.x)<=enemyPatrolSpeed) {velocity.x=enemyPatrolSpeed*sign(p_player.position.x-position.x);}
-        if(p_player.position.x>position.x)
-        velocity.x+=enemyFollowAcceleration;
-    else if(p_player.position.x<position.x) velocity.x-=enemyFollowAcceleration;
 
-      //if(distance(p_player.position,position)<5) velocity={0,0};
-      currentFrame.x = (int(timeAcumulator/timeStep)%3+8)*playerWidth;
-    }
-    else
+    if(enemyType==ground)
     {
-        if(int(currentTime/2)%2) velocity.x=enemyPatrolSpeed;
-        else velocity.x=-enemyPatrolSpeed;
-        currentFrame.x = (int(timeAcumulator/timeStep)%8)*playerWidth;
+                if(distance(position,p_player.position)<=enemyDetectRange*tileSize)
+                    isFollowing=1;
+                     else isFollowing=0;
+
+                    if(isFollowing)
+                {
+                    if(abs(velocity.x)<=enemyPatrolSpeed) {velocity.x=enemyPatrolSpeed*sign(p_player.position.x-position.x);}
+                    if(p_player.position.x>position.x)
+                    velocity.x+=enemyFollowAcceleration;
+                else if(p_player.position.x<position.x) velocity.x-=enemyFollowAcceleration;
+
+                  currentFrame.x = (int(timeAcumulator/timeStep)%3+8)*enemyWidth;
+                }
+                else
+                {
+                    if(int(currentTime/2)%2) velocity.x=enemyPatrolSpeed;
+                    else velocity.x=-enemyPatrolSpeed;
+                    currentFrame.x = (int(timeAcumulator/timeStep)%8)*enemyWidth;
+                }
+
     }
-    chunkNumber=position.x/screenWidth;
-    if(velocity.x<0) spriteFlip=SDL_FLIP_HORIZONTAL;
-    else spriteFlip=SDL_FLIP_NONE;
+    else if(enemyType==fly)
+    {
+          if(distance(position,p_player.position)<=2*enemyDetectRange*tileSize)
+                    isFollowing=1;
+                     else isFollowing=0;
+
+        if(isFollowing)
+        {
+            velocity.x=0.5f*MoveSpeed*sign(p_player.position.x-position.x);
+            velocity.y=0.5f*MoveSpeed*sign(p_player.position.y-position.y);
+            currentFrame.x=(int(timeAcumulator/timeStep)%3+13)*enemyWidth;
+
+        }
+        else
+        {
+             if(int(currentTime/2)%2) velocity.x=enemyPatrolSpeed;
+                    else velocity.x=-enemyPatrolSpeed;
+             if(int(currentTime/2)%2) velocity.y=enemyPatrolSpeed;
+                    else velocity.y=-1.5f*enemyPatrolSpeed;
+                currentFrame.x=(int(timeAcumulator/timeStep)%10)*enemyWidth;
+
+        }
+
+
+    }
+
 
     Movement:
+        chunkNumber=position.x/screenWidth;
         if(immuneDame)
             currentFrame.y=enemyHeight;
         else currentFrame.y=0;
-    velocity.y=0;
+        if(enemyType==ground)
+            velocity.y=0;
+     if(velocity.x<0) spriteFlip=SDL_FLIP_HORIZONTAL;
+    else spriteFlip=SDL_FLIP_NONE;
     Move();
 
 
 }
-void Enemy::keepOnPlatForm(Player p_player,int leftMap[][mapTileWidth],int centerMap[][mapTileWidth],int rightMap[][mapTileWidth])
+void Enemy::collisionMap(Player p_player,int leftMap[][mapTileWidth],int centerMap[][mapTileWidth],int rightMap[][mapTileWidth])
 {
     if(chunkNumber==p_player.chunkNumber)
         {checkTileCollision(centerMap);
-        if(!isOnPlatform(centerMap))
+        if(enemyType==ground&&!isOnPlatform(centerMap))
         {
             position.x=position.x-velocity.x;
             velocity.x=0;
@@ -56,7 +88,7 @@ void Enemy::keepOnPlatForm(Player p_player,int leftMap[][mapTileWidth],int cente
         else if(chunkNumber>p_player.chunkNumber)
         {checkTileCollision(rightMap);
 
-                if(!isOnPlatform(rightMap))
+                if(enemyType==ground&&!isOnPlatform(rightMap))
         {
             position.x=position.x-velocity.x;
             velocity.x=0;
@@ -65,7 +97,7 @@ void Enemy::keepOnPlatForm(Player p_player,int leftMap[][mapTileWidth],int cente
         else
         {checkTileCollision(leftMap);
 
-                if(!isOnPlatform(leftMap))
+                if(enemyType==ground&&!isOnPlatform(leftMap))
         {
             position.x=position.x-velocity.x;
             velocity.x=0;
@@ -131,14 +163,14 @@ void Enemy::updateWall(Player &p_player,float timeAccumulator,camera Cam)
     velocity.x=0.1f*MoveSpeed;
     Move();
     position.x=max(float(Cam.viewPortion.x-50),position.x);
-    if(p_player.position.x<position.x+wallWidth*entityScalar)
+    if(p_player.position.x<position.x+wallWidth)
     {
         p_player.velocity.x=2*MoveSpeed;
         p_player.velocity.y=2*JumpForce;
-        p_player.HP--;
+        p_player.HP-=wallDame;
         p_player.currentState=ImmuneDame;
     }
-    currentFrame.x=int(timeAccumulator/timeStep)%7*wallWidth;
+    currentFrame.x=int(timeAccumulator/timeStep)%3*wallWidth;
 
 
 

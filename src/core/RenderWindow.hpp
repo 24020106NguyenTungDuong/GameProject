@@ -23,8 +23,9 @@ class RenderWindow
         void RenderMap(tileMap& p_tileMap,camera p_cam);
         void Display();
         void renderBackGround();
+        void renderPNG(SDL_Texture* img);
         void renderCursor(int mouseX,int mouseY);
-        void renderText(const char* text,vector2f textPosition,SDL_Color textColor={255,255,255,255});
+        void renderText(const char* text,vector2f textPosition,SDL_Color textColor=textcolor);
     private:
         SDL_Renderer* renderer;
         SDL_Window* window;
