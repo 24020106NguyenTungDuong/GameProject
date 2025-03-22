@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
             cout<<"SDL_mixer Init failed: "<<Mix_GetError()<<endl;
             return 1;
         }
-    RenderWindow window("Game 1",screenWidth,screenHeight);
+    RenderWindow window("Slash and Dash",screenWidth,screenHeight);
     SDL_Texture* testTexture=window.LoadTexture("res/graphics/playerSprite/player24 - Copy.png");
     SDL_Texture* slashTexture=window.LoadTexture("res/graphics/playerSprite/slash.png");
     SDL_Texture* Cursor=window.LoadTexture("res/graphics/playerSprite/cursor.png");
@@ -66,9 +66,10 @@ int main(int argc, char *argv[])
 
     GameStart:
 
+    bool usedMap[numberOfMaps+5]={0};
+    int numberOfUsedMaps=0;
 
-
-        inputMap(centerMap,mapList[0]);
+    inputMap(centerMap,mapList[0]);
     inputMap(rightMap,basePath+to_string(rand()%numberOfMaps)+".txt");
 
     Player player0(playerStartPosition,playerWidth,playerHeight,testTexture);
@@ -120,6 +121,8 @@ int main(int argc, char *argv[])
 
     while(gameRunning)
     {
+
+
         while(SDL_PollEvent(&event))
         {
             if(event.type==SDL_QUIT)
@@ -144,24 +147,10 @@ int main(int argc, char *argv[])
                 };
 
         }
-        if(inMenu)
-        {
-            window.renderPNG(Menu);
-            window.renderText("Press R to start",vector2f(100,screenHeight-96));
-            window.renderText("Press ESC to exit",vector2f(100,screenHeight-72));
-            window.Display();
-            continue;
 
-
-        }
-        if(pause==1) {
-
-                window.renderPNG(pausecreen);
-                window.renderText("Press ESC to resume",vector2f(screenWidth/2-100,screenHeight/2));
-                window.renderText("Press R to restart",vector2f(screenWidth/2-100,screenHeight/2+24));
-                window.Display();
-                continue;
-                    }
+        const Uint8* keystates=SDL_GetKeyboardState(NULL);
+        int mouseX, mouseY;
+        Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
 
         currentTime=utils::getTimeSeconds();
         frameTime=currentTime-startLoopTime;
@@ -169,18 +158,65 @@ int main(int argc, char *argv[])
         timeAcumulator+=frameTime;
         startLoopTime=currentTime;
         frameCount++;
+        SDL_Delay(frameDelay+FPSadjust);
         if(timeAcumulator>=1.0f) {
                                     timeAcumulator-=1.0f;
                                     currentFPS=frameCount;
                                     frameCount=0;
                                             if(currentFPS<60) FPSadjust-=0.5f;
-                                            else if(currentFPS>70) FPSadjust+=0.05f;
-                                    }
+                                            else if(currentFPS>65) FPSadjust+=0.05f;
+                                }
 
-        const Uint8* keystates=SDL_GetKeyboardState(NULL);
 
-        int mouseX, mouseY;
-        Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
+        if(inMenu)
+        {
+
+            window.renderPNG(Menu);
+            if(mouseX<=170&&mouseX>=100&&mouseY>=544&&mouseY<=568)
+            {
+                window.renderText("Start",vector2f(100,screenHeight-96));
+                if( mouseState & SDL_BUTTON_LEFT) inMenu=0;
+            }
+            else window.renderText("Start",vector2f(100,screenHeight-96),chosenColor);
+
+            if(mouseX<=170&&mouseX>=100&&mouseY>=568&&mouseY<=592)
+            {
+                window.renderText("Exit",vector2f(100,screenHeight-72));
+                if( mouseState & SDL_BUTTON_LEFT) goto EndGame;
+            }
+            else  window.renderText("Exit",vector2f(100,screenHeight-72),chosenColor);
+
+            window.renderCursor(mouseX,mouseY);
+            window.Display();
+            continue;
+        }
+        if(pause==1) {
+                window.renderPNG(pausecreen);
+                if(mouseX<=450&&mouseX>=380&&mouseY>=320&&mouseY<=344)
+                {
+                    window.renderText("Resume",vector2f(screenWidth/2-100,screenHeight/2));
+                    if( mouseState & SDL_BUTTON_LEFT) pause=0;
+                }
+                else window.renderText("Resume",vector2f(screenWidth/2-100,screenHeight/2),chosenColor);
+
+                if(mouseX<=450&&mouseX>=380&&mouseY>=344&&mouseY<=368)
+                {
+                    window.renderText("Restart",vector2f(screenWidth/2-100,screenHeight/2+24));
+                    if( mouseState & SDL_BUTTON_LEFT) goto GameStart;
+
+                }
+                else window.renderText("Restart",vector2f(screenWidth/2-100,screenHeight/2+24),chosenColor);
+                window.renderCursor(mouseX,mouseY);
+                window.Display();
+                continue;
+                    }
+
+
+
+
+
+
+
         player0.updatePlayer(keystates,event, mouseState,mouseX,mouseY, slashing ,timeAcumulator,Cam,allSound);
 
         for(vector <Enemy>::iterator it=Enemies.begin();it!= Enemies.end();)
@@ -212,7 +248,18 @@ int main(int argc, char *argv[])
                 swap(centerChunk,leftChunk);
                 swap(centerMap,rightMap);
                 swap(centerChunk,rightChunk);
-    inputMap(rightMap,basePath+to_string(rand()%numberOfMaps)+".txt");
+                           int mapIndex=rand()%numberOfMaps;
+                           while(usedMap[mapIndex])
+                            mapIndex=rand()%numberOfMaps;
+                    numberOfUsedMaps++;
+                    if(numberOfUsedMaps==numberOfMaps)
+                    {
+                        numberOfUsedMaps=0;
+                        for(int i=0;i<numberOfMaps;i++)
+                            usedMap[i]=0;
+                    }
+                    usedMap[mapIndex]=1;
+        inputMap(rightMap,basePath+to_string(mapIndex)+".txt");
         loadChunk(rightMap,greenBrick,platform,rightChunk,1,player0.chunkNumber);
                         //spawn Enemy when enter new right map
                          for(int y=1;y<mapTileHeight;y++)
@@ -243,8 +290,6 @@ int main(int argc, char *argv[])
                                     Enemies.push_back(Enemy(newEnemyPosition,enemyWidth,enemyHeight,flyType,fly));
                                     }
                                 }
-
-
                             }
             }
         //updateLeftMap when enter new left map
@@ -311,7 +356,6 @@ int main(int argc, char *argv[])
         window.renderCursor(mouseX,mouseY);
         window.Display();
 
-        SDL_Delay(frameDelay+FPSadjust);
 
     }
 
@@ -322,7 +366,8 @@ int main(int argc, char *argv[])
     window.renderText( ("Score: "+to_string(currentScore)).c_str(),scorePosition);
     window.renderText( ("Highscore: "+to_string(highScore)).c_str(),highScorePosition);
     window.renderText("Game over.",vector2f{380,280});
-    window.renderText("Press R to replay or ESC to exit the game",vector2f{200,320});
+    window.renderText("Replay (R)",vector2f{380,320});
+    window.renderText("Exit (ESC)",vector2f{380,344});
     window.Display();
     }
 

@@ -90,13 +90,13 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
        isDashCooldown=0;
    }
 
-    if(keystates[SDL_SCANCODE_A])
+    if(keystates[SDL_SCANCODE_A] || keystates[SDL_SCANCODE_LEFT])
     {
         velocity.x=-MoveSpeed;
          currentState=Running;
     }
 
-    if(keystates[SDL_SCANCODE_D])
+    if(keystates[SDL_SCANCODE_D] || keystates[SDL_SCANCODE_RIGHT])
     {
         velocity.x=MoveSpeed;
         currentState=Running;
@@ -106,7 +106,7 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
 
     if(!isAirborne)
         jumpStartTime=currentTime;
-    if(keystates[SDL_SCANCODE_SPACE]&&currentTime-jumpStartTime<=jumpTimer)
+    if( ( keystates[SDL_SCANCODE_SPACE] ||keystates[SDL_SCANCODE_UP] || keystates[SDL_SCANCODE_W] )&&currentTime-jumpStartTime<=jumpTimer)
     {
 
         currentState=Jumping;
@@ -127,6 +127,8 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
             velocity.y=1;
             HP-=voidDame;
         }
+
+
         if(velocity.y<0)
         currentState=Jumping;
     else if(velocity.y>0)

@@ -14,7 +14,7 @@ const int screenHeight=640;
 const int tileSize=32;
 const int mapTileWidth=screenWidth/tileSize;
 const int mapTileHeight=screenHeight/tileSize;
-const int numberOfMaps=12;
+const int numberOfMaps=19;
 const int textSize=24;
 const float timeStep= 0.1f;
 const int solidTile=1;
@@ -26,6 +26,7 @@ const vector2f scorePosition={750,24};
 const vector2f highScorePosition={750,48};
 const vector2f FPSPosition={750,72};
 const SDL_Color textcolor={255,50,50,255};
+const SDL_Color chosenColor={255,255,255,255};
 const int distancePerScore=50;
 const int scorePerEnemy=50;
 const string basePath="res/mapList/map";
@@ -38,7 +39,7 @@ const float jumpTimer=0.3f;
 const float dashTimer=0.2f;
 const float dashCooldown=1.0f;
 
-const float immunityTime=0.3f;
+const float immunityTime=0.2f;
 const float slashTimer = 0.8f;
 const float slashFallSpeed=3.0f;
 
