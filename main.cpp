@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
             return 1;
         }
     RenderWindow window("Slash and Dash",screenWidth,screenHeight);
-    SDL_Texture* testTexture=window.LoadTexture("res/graphics/playerSprite/player24 - Copy.png");
+    SDL_Texture* testTexture=window.LoadTexture("res/graphics/playerSprite/player.png");
     SDL_Texture* slashTexture=window.LoadTexture("res/graphics/playerSprite/slash.png");
     SDL_Texture* Cursor=window.LoadTexture("res/graphics/playerSprite/cursor.png");
     SDL_ShowCursor(SDL_DISABLE);
@@ -72,10 +72,10 @@ int main(int argc, char *argv[])
     inputMap(centerMap,mapList[0]);
     inputMap(rightMap,basePath+to_string(rand()%numberOfMaps)+".txt");
 
-    Player player0(playerStartPosition,playerWidth,playerHeight,testTexture);
+    Player player(playerStartPosition,playerWidth,playerHeight,testTexture);
     Projectile slashing(vector2f(0,0),slashWidth,slashHeight,slashTexture);
 
-    player0.chunkNumber=player0.position.x/screenWidth;
+    player.chunkNumber=player.position.x/screenWidth;
     camera Cam;
 
 
@@ -84,14 +84,14 @@ int main(int argc, char *argv[])
     SDL_Texture* pausecreen=window.LoadTexture("res/graphics/blank.png");
     SDL_Texture* Menu=window.LoadTexture("res/graphics/menu.png");
 
-     loadChunk(centerMap,greenBrick,platform,centerChunk,0,player0.chunkNumber);
-        loadChunk(rightMap,greenBrick,platform,rightChunk,1,player0.chunkNumber);
-        loadChunk(leftMap,greenBrick,platform,leftChunk,-1,player0.chunkNumber);
+    loadChunk(centerMap,greenBrick,platform,centerChunk,0,player.chunkNumber);
+    loadChunk(rightMap,greenBrick,platform,rightChunk,1,player.chunkNumber);
+    loadChunk(leftMap,greenBrick,platform,leftChunk,-1,player.chunkNumber);
 
 
     SDL_Texture* groundType=window.LoadTexture("res/graphics/EnemySprite/groundType.png");
     SDL_Texture* flyType=window.LoadTexture("res/graphics/EnemySprite/flyType.png");
-    SDL_Texture* wall=window.LoadTexture("res/graphics/Wall/wall3.png");
+    SDL_Texture* wall=window.LoadTexture("res/graphics/Wall/wall.png");
     Enemy wallOfFlesh(vector2f(Cam.viewPortion.x,0),wallWidth,wallHeight,wall);
 
     bool gameRunning=1;
@@ -163,8 +163,8 @@ int main(int argc, char *argv[])
                                     timeAcumulator-=1.0f;
                                     currentFPS=frameCount;
                                     frameCount=0;
-                                            if(currentFPS<60) FPSadjust-=0.5f;
-                                            else if(currentFPS>65) FPSadjust+=0.05f;
+                                            if(currentFPS<FPS) FPSadjust-=0.5f;
+                                            else if(currentFPS>FPS+FPSrange) FPSadjust+=0.05f;
                                  }
 
 
@@ -217,33 +217,21 @@ int main(int argc, char *argv[])
 
 
 
-        player0.updatePlayer(keystates,event, mouseState,mouseX,mouseY, slashing ,timeAcumulator,Cam,allSound);
-
-        for(vector <Enemy>::iterator it=Enemies.begin();it!= Enemies.end();)
-            {
-                if (it->HP<=0||abs(it->chunkNumber-player0.chunkNumber)>1)
-                        {
-                            if(it->HP<=0)
-                            enemiesKilled++;
-                            it=Enemies.erase(it);
-                        }
-                        else
-                        {
-                            ++it;
-                        }
-            }
+        player.updatePlayer(keystates,event, mouseState,mouseX,mouseY, slashing ,timeAcumulator,Cam,allSound);
+        deleteInvalidEnemis(player,enemiesKilled,Enemies);
 
 
           for(int i=0;i<Enemies.size();i++)
         {
-            Enemies[i].collisionPlayer(player0,slashing);
-            Enemies[i].updateEnemy(player0,currentTime,timeAcumulator);
+            Enemies[i].collisionPlayer(player,slashing);
+            Enemies[i].updateEnemy(player,currentTime,timeAcumulator);
         }
 
 
         //updateRightMap when enter new right map
-        if(int(player0.position.x/screenWidth)>player0.chunkNumber)
-            {player0.chunkNumber++;
+        if(int(player.position.x/screenWidth)>player.chunkNumber)
+                {
+                player.chunkNumber++;
                 swap(centerMap,leftMap);
                 swap(centerChunk,leftChunk);
                 swap(centerMap,rightMap);
@@ -260,94 +248,66 @@ int main(int argc, char *argv[])
                     }
                     usedMap[mapIndex]=1;
         inputMap(rightMap,basePath+to_string(mapIndex)+".txt");
-        loadChunk(rightMap,greenBrick,platform,rightChunk,1,player0.chunkNumber);
-                        //spawn Enemy when enter new right map
-                         for(int y=1;y<mapTileHeight;y++)
-                            for(int x=1;x<mapTileWidth-1;x++)
-                            {
-                                if(rightMap[y][x]!=0
-                                   &&rightMap[y-1][x-1]==0&&rightMap[y-1][x]==0&&rightMap[y-1][x+1]==0)
-                                if(rand()%100<= spawnRate*100)
-                                {
-                                    vector2f newEnemyPosition;
-                                    newEnemyPosition.x=x*tileSize+(player0.chunkNumber+1)*screenWidth;
-                                    newEnemyPosition.y=y*tileSize-entityScalar*enemyHeight;
-                                    Enemies.push_back(Enemy(newEnemyPosition,enemyWidth,enemyHeight,groundType,ground));
-                                    if(x+7<mapTileWidth) x+=7;
-                                    else break;
-                                }
-
-                                if(rightMap[y-1][x-1]==0&&rightMap[y-1][x]==0&&rightMap[y-1][x+1]==0
-                                &&rightMap[y][x-1]==0&&rightMap[y][x]==0&&rightMap[y][x+1]==0
-                                &&rightMap[y+1][x-1]==0&&rightMap[y+1][x]==0&&rightMap[y+1][x+1]==0
-                                   )
-                                {
-                                    if(rand()%1000<2)
-                                    {
-                                        vector2f newEnemyPosition;
-                                    newEnemyPosition.x=x*tileSize+(player0.chunkNumber+1)*screenWidth;
-                                    newEnemyPosition.y=y*tileSize-entityScalar*enemyHeight;
-                                    Enemies.push_back(Enemy(newEnemyPosition,enemyWidth,enemyHeight,flyType,fly));
-                                    }
-                                }
-                            }
+        loadChunk(rightMap,greenBrick,platform,rightChunk,1,player.chunkNumber);
+                spawnEnemies(player,groundType,flyType,rightMap,Enemies);
             }
         //updateLeftMap when enter new left map
-         if(int(player0.position.x/screenWidth)<player0.chunkNumber)
+         if(int(player.position.x/screenWidth)<player.chunkNumber)
             {
-                player0.chunkNumber--;
+                player.chunkNumber--;
                 swap(leftMap,centerMap);
                 swap(leftChunk,centerChunk);
                 swap(leftMap,rightMap);
                 swap(leftChunk,rightChunk);
                 inputMap(leftMap,basePath+to_string(rand()%numberOfMaps)+".txt");
-                loadChunk(leftMap,greenBrick,platform,leftChunk,-1,player0.chunkNumber);
+                loadChunk(leftMap,greenBrick,platform,leftChunk,-1,player.chunkNumber);
             }
 
 
 
-        player0.checkTileCollision(centerMap);
+        player.checkTileCollision(centerMap);
 
         slashing.updateProj(timeAcumulator);
-        Cam.updateCamera(player0);
+        Cam.updateCamera(player);
 
         window.ClearScreen();
         window.renderBackGround();
         window.renderChunk(Cam,leftChunk,centerChunk,rightChunk);
-        window.RenderTexture(player0,Cam);
+        window.RenderTexture(player,Cam);
 
                 for(int i=0;i<Enemies.size();i++)
         {
-            Enemies[i].collisionMap(player0,leftMap,centerMap,rightMap);
+            Enemies[i].collisionMap(player,leftMap,centerMap,rightMap);
             window.RenderTexture(Enemies[i],Cam);
         }
 
-        wallOfFlesh.updateWall(player0,timeAcumulator,Cam);
+        wallOfFlesh.updateWall(player,timeAcumulator,Cam);
         window.RenderTexture(wallOfFlesh,Cam);
 
-        distanceTravelled=max(distanceTravelled,int(player0.position.x-playerStartPosition.x) );
+        distanceTravelled=max(distanceTravelled,int(player.position.x-playerStartPosition.x) );
         currentScore=distanceTravelled/distancePerScore+enemiesKilled*scorePerEnemy;
 
 
 
         if(slashing.active)
         {
-
             window.RenderTexture(slashing,Cam);
-
         }
-        if(player0.HP<=0) {
-                highScore=max(highScore,currentScore);
-                ofstream file("res/highscore.txt");
-               if(file)
-               {
-                   file<<highScore;
-               }
-                file.close();
-                gameRunning=0;break;}
+
+        if(player.HP<=0)
+                {
+                            highScore=max(highScore,currentScore);
+                            ofstream file("res/highscore.txt");
+                           if(file)
+                               {
+                                   file<<highScore;
+                               }
+                            file.close();
+                            gameRunning=0;break;
+                }
 
 
-        window.renderText( ("HP: "+to_string(player0.HP)).c_str(),HPPosition);
+        window.renderText( ("HP: "+to_string(player.HP)).c_str(),HPPosition);
         window.renderText( ("FPS: "+to_string(currentFPS)).c_str(),FPSPosition);
         window.renderText( ("Score: "+to_string(currentScore)).c_str(),scorePosition);
         window.renderText( ("Highscore: "+to_string(highScore)).c_str(),highScorePosition);

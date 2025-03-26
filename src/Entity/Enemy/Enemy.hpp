@@ -31,4 +31,6 @@ class Enemy: public Entity
 
 };
 static vector <Enemy> Enemies;
+void spawnEnemies(Player player,SDL_Texture* groundType,SDL_Texture* flyType,int rightMap[][mapTileWidth],vector <Enemy>& Enemies);
+void deleteInvalidEnemis(Player player,int& enemiesKilled,vector <Enemy>& Enemies);
 #endif // ENEMY_HPP

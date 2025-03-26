@@ -176,3 +176,53 @@ void Enemy::updateWall(Player &p_player,float timeAccumulator,camera Cam)
 
 
 }
+void spawnEnemies(Player player,SDL_Texture* groundType,SDL_Texture* flyType,int rightMap[][mapTileWidth],vector <Enemy>& Enemies)
+{
+                        for(int y=1;y<mapTileHeight;y++)
+                            for(int x=1;x<mapTileWidth-1;x++)
+                            {
+                                if(rightMap[y][x]!=0
+                                   &&rightMap[y-1][x-1]==0&&rightMap[y-1][x]==0&&rightMap[y-1][x+1]==0)
+                                if(rand()%100<= spawnRate*100)
+                                {
+                                    vector2f newEnemyPosition;
+                                    newEnemyPosition.x=x*tileSize+(player.chunkNumber+1)*screenWidth;
+                                    newEnemyPosition.y=y*tileSize-entityScalar*enemyHeight;
+                                    Enemies.push_back(Enemy(newEnemyPosition,enemyWidth,enemyHeight,groundType,ground));
+                                    if(x+7<mapTileWidth) x+=7;
+                                    else break;
+                                }
+
+                                if(rightMap[y-1][x-1]==0&&rightMap[y-1][x]==0&&rightMap[y-1][x+1]==0
+                                &&rightMap[y][x-1]==0&&rightMap[y][x]==0&&rightMap[y][x+1]==0
+                                &&rightMap[y+1][x-1]==0&&rightMap[y+1][x]==0&&rightMap[y+1][x+1]==0)
+
+                                {
+                                    if(rand()%1000<2)
+                                    {
+                                        vector2f newEnemyPosition;
+                                    newEnemyPosition.x=x*tileSize+(player.chunkNumber+1)*screenWidth;
+                                    newEnemyPosition.y=y*tileSize-entityScalar*enemyHeight;
+                                    Enemies.push_back(Enemy(newEnemyPosition,enemyWidth,enemyHeight,flyType,fly));
+                                    }
+                                }
+                            }
+}
+void deleteInvalidEnemis(Player player,int& enemiesKilled,vector <Enemy>& Enemies)
+{
+            for(vector <Enemy>::iterator it=Enemies.begin();it!= Enemies.end();)
+            {
+                if (it->HP<=0||abs(it->chunkNumber-player.chunkNumber)>1)
+                        {
+                            if(it->HP<=0)
+                            enemiesKilled++;
+                            it=Enemies.erase(it);
+                        }
+                        else
+                        {
+                            ++it;
+                        }
+            }
+
+
+}

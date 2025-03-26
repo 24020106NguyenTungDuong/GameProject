@@ -137,7 +137,11 @@ bool Entity::isOnPlatform(int p_mapTile[][mapTileWidth])
 }
 void Entity::checkTileCollision(int p_mapTile[][mapTileWidth])
 {
-        if(position.y<0) position.y=0;
+        if(position.y<0)
+        {
+            position.y=0;
+            velocity.y=1;
+        }
     int leftTile=(position.x-1)/tileSize;
     int rightTile=(rightSide()+1)/tileSize;
     int topTile=(position.y-1)/tileSize;

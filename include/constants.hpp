@@ -6,8 +6,9 @@
 #include<SDL_mixer.h>
 using namespace std;
 //render constants
-const int maxFPS=60;
-const float frameDelay=1000.0f/maxFPS;
+const int FPS=60;
+const int FPSrange=3;
+const float frameDelay=1000.0f/FPS;
 const float entityScalar = 2.0f;
 const int screenWidth=960;
 const int screenHeight=640;
