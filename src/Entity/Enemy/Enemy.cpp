@@ -160,7 +160,7 @@ void Enemy::collisionPlayer(Player &p_player,Projectile p_slash)
 }
 void Enemy::updateWall(Player &p_player,float timeAccumulator,camera Cam)
 {
-    velocity.x=0.1f*MoveSpeed;
+    velocity.x=0.3f*MoveSpeed;
     Move();
     position.x=max(float(Cam.viewPortion.x-50),position.x);
     if(p_player.position.x<position.x+wallWidth)

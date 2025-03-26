@@ -312,7 +312,6 @@ int main(int argc, char *argv[])
         window.renderText( ("Score: "+to_string(currentScore)).c_str(),scorePosition);
         window.renderText( ("Highscore: "+to_string(highScore)).c_str(),highScorePosition);
 
-
         window.renderCursor(mouseX,mouseY);
         window.Display();
 

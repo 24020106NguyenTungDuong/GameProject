@@ -7,7 +7,6 @@
 #include "utils.hpp"
 #include "math.hpp"
 #include "PlaySound.hpp"
-#include "animation.hpp"
 #include "constants.hpp"
 class Entity
 {
