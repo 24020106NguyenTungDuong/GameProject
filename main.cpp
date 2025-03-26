@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
                                     frameCount=0;
                                             if(currentFPS<60) FPSadjust-=0.5f;
                                             else if(currentFPS>65) FPSadjust+=0.05f;
-                                }
+                                 }
 
 
         if(inMenu)
@@ -377,19 +377,19 @@ int main(int argc, char *argv[])
          while(SDL_PollEvent(&event))
         {
             if(event.type==SDL_QUIT)
-                {endScreen=0;
-                 goto EndGame;
+                {
+                    endScreen=0;
+                    goto EndGame;
                 }
 
             if(event.type==SDL_KEYDOWN)
-            {
-                if(event.key.keysym.sym==SDLK_ESCAPE)
-                    goto EndGame;
-                if(event.key.keysym.sym==SDLK_r)
-                goto GameStart;
-            }
+                {
+                    if(event.key.keysym.sym==SDLK_ESCAPE)
+                        goto EndGame;
+                    if(event.key.keysym.sym==SDLK_r)
+                    goto GameStart;
+                }
         }
-
     }
 
 

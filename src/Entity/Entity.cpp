@@ -102,15 +102,15 @@ void Entity::handleColision(const SDL_Rect& dstTile,int tileType)
 
     if(tileType==platformer)
     {
-        if(minCollision==top&&velocity.y>0)
-    {
+            if(minCollision==top&&velocity.y>0)
+        {
 
 
-        position.y=dstTile.y-entityScalar*currentFrame.h-1;
-        velocity.y=0;
-        isAirborne=0;
+            position.y=dstTile.y-entityScalar*currentFrame.h-1;
+            velocity.y=0;
+            isAirborne=0;
 
-    }
+        }
 
     }
 
@@ -120,10 +120,10 @@ void Entity::handleColision(const SDL_Rect& dstTile,int tileType)
 }
 bool Entity::isOnPlatform(int p_mapTile[][mapTileWidth])
 {
-        int entityLeft=(position.x)/tileSize;
+    int entityLeft=(position.x)/tileSize;
     int entityCenter=(position.x+entityScalar*currentFrame.w/2)/tileSize;
     int entityRight=(rightSide())/tileSize;
-     int botTile=(botSide()+1)/tileSize;
+    int botTile=(botSide()+1)/tileSize;
     entityRight=entityRight%30;
     entityCenter=entityCenter%30;
     entityLeft=entityLeft%30;
