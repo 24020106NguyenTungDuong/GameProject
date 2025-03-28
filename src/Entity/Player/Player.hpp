@@ -22,8 +22,9 @@ class Player: public Entity
     bool isSlashing=0;
     bool isDashCooldown=0;
     bool hasPlayedRunningSound=0;
+    bool ammo=1;
     PlayerState currentState=StandingStill;
-    void updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &mouseState,int mouseX,int mouseY, Projectile &p_projectile , float timeAcumulator,camera Cam,const PlaySound &allSound);
+    void updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &mouseState,int mouseX,int mouseY, Projectile &slashProjectile,Projectile &bulletProjectile , float timeAcumulator,camera Cam,const PlaySound &allSound);
     void updateProjectile(Projectile &p_projectile,Uint32 &mouseState);
 
     private:

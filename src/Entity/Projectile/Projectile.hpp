@@ -10,8 +10,8 @@ class Projectile: public Entity
     :Entity(p_position,entityWidth,entityHeight,p_texture){
         currentFrame.x=0;
         currentFrame.y=0;
-        currentFrame.w=slashWidth;
-        currentFrame.h=slashHeight;
+        currentFrame.w=entityWidth;
+        currentFrame.h=entityHeight;
     };
 
     public:

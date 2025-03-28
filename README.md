@@ -20,12 +20,16 @@
  -A/D, mũi tên trái phải để di chuyển.
 
  -Space, W, mũi tên lên để nhảy; giữ lâu để nhảy cao hơn.
+ 
+ - S để bắn khi còn đạn.
 
  -Chuột trái để tấn công về phía con trò.
 
  -Chuột phải để lướt nhanh về phía con trỏ,tiêu diệt hết kẻ địch trên đường lướt.
 
  -Ngoài ra bạn có thể nhảy lên đầu kẻ địch để gây sát thương.
+
+ -Thu thập vật phẩm để hồi máu và nạp đạn.
 
  Mục tiêu game:
 

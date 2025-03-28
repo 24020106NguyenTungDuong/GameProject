@@ -13,12 +13,14 @@ class PlaySound
         dashSound=Mix_LoadWAV("res/Sound/SFX/dash.wav");
         runningSound=Mix_LoadWAV("res/Sound/SFX/running.wav");
         jumpSound=Mix_LoadWAV("res/Sound/SFX/jump.wav");
+        bulletSound=Mix_LoadWAV("res/Sound/SFX/bullet.wav");
     };
 
     public:
     Mix_Music* backgroundMusic;
     Mix_Chunk* slashSound;
     Mix_Chunk* dashSound;
+    Mix_Chunk* bulletSound;
     Mix_Chunk* runningSound;
     Mix_Chunk* jumpSound;
 };

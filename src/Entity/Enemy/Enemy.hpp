@@ -18,7 +18,7 @@ class Enemy: public Entity
     void updateEnemy(Player p_player,float currentTime,float timeAcumulator);
     void updateWall(Player &p_player,float timeAccumulator,camera Cam);
     void collisionMap(Player p_player,int leftMap[][mapTileWidth],int centerMap[][mapTileWidth],int rightMap[][mapTileWidth]);
-    void collisionPlayer(Player &p_player,Projectile p_slash);
+    void collisionPlayer(Player &p_player,Projectile p_slash,Projectile p_bullet);
     bool checkSlashCollision(Player p_player,Projectile p_slash);
      int enemyType;
     private:
@@ -31,6 +31,6 @@ class Enemy: public Entity
 
 };
 static vector <Enemy> Enemies;
-void spawnEnemies(Player player,SDL_Texture* groundType,SDL_Texture* flyType,int rightMap[][mapTileWidth],vector <Enemy>& Enemies);
+void spawnEnemies(Player player,SDL_Texture* groundType,SDL_Texture* flyType,SDL_Texture* healItem,SDL_Texture* ammoItem,int rightMap[][mapTileWidth],vector <Enemy>& Enemies);
 void deleteInvalidEnemis(Player player,int& enemiesKilled,vector <Enemy>& Enemies);
 #endif // ENEMY_HPP

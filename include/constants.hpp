@@ -23,6 +23,7 @@ const int platformer=2;
 const int mapNumber=4;
 const vector2f playerStartPosition={1000,500};
 const vector2f HPPosition={750,0};
+const vector2f ammoPosition={850,0};
 const vector2f scorePosition={750,24};
 const vector2f highScorePosition={750,48};
 const vector2f FPSPosition={750,72};
@@ -39,16 +40,17 @@ const float JumpForce=-10.0f;
 const float jumpTimer=0.3f;
 const float dashTimer=0.2f;
 const float dashCooldown=1.0f;
-
 const float immunityTime=0.2f;
 const float slashTimer = 0.8f;
 const float slashFallSpeed=3.0f;
-
+const int bulletSpeed=20;
 //size constant
 const int playerWidth = 24;
 const int playerHeight = 24;
 const int slashWidth = 48;
 const int slashHeight = 24;
+const int bulletWidth = 24;
+const int bulletHeight = 24;
 const int enemyHeight = 24;
 const int enemyWidth = 24;
 const int wallWidth=105;
@@ -66,11 +68,15 @@ const float enemyFollowAcceleration=0.1f;
 const float attackRange=88;
 const float attackAngle=60;
 const float spawnRate=0.1f;
+const float healItemSpawnRate=0.01f;
+const float ammoItemSpawnRate=0.02f;
 const int voidDame=2;
 const int wallDame=4;
 const int wall=0;
 const int ground=1;
 const int fly=2;
+const int heal=3;
+const int ammo=4;
 //music const
 const int musicVolume=8;
 const int SFXVolume=64;

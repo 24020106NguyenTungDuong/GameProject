@@ -60,6 +60,11 @@ void Enemy::updateEnemy(Player p_player,float currentTime,float timeAcumulator)
 
 
     }
+    else
+    {
+        currentFrame.x=(int(timeAcumulator/timeStep)%8)*enemyWidth;
+        return;
+    }
 
 
     Movement:
@@ -118,8 +123,28 @@ bool Enemy::checkSlashCollision(Player p_player,Projectile p_slash)
     if(abs(angleDiff)>attackAngle/2) return 0;
     return 1;
 }
-void Enemy::collisionPlayer(Player &p_player,Projectile p_slash)
+void Enemy::collisionPlayer(Player &p_player,Projectile p_slash,Projectile p_bullet)
 {
+    if(enemyType==heal)
+    {
+        if(checkEntityCollision(p_player))
+        {
+            p_player.HP=min(playerHP,p_player.HP+1);
+            HP=0;
+        }
+        return;
+    }
+    if(enemyType==ammo)
+    {
+        if(checkEntityCollision(p_player))
+        {
+            p_player.ammo=1;
+            HP=0;
+        }
+        return;
+    }
+    if(p_bullet.active&&checkEntityCollision(p_bullet))
+        HP=0;
 
       if(p_player.isSlashing&&checkSlashCollision(p_player,p_slash))
     {
@@ -176,27 +201,46 @@ void Enemy::updateWall(Player &p_player,float timeAccumulator,camera Cam)
 
 
 }
-void spawnEnemies(Player player,SDL_Texture* groundType,SDL_Texture* flyType,int rightMap[][mapTileWidth],vector <Enemy>& Enemies)
+void spawnEnemies(Player player,SDL_Texture* groundType,SDL_Texture* flyType,SDL_Texture* healItem,SDL_Texture* ammoItem,int rightMap[][mapTileWidth],vector <Enemy>& Enemies)
 {
                         for(int y=1;y<mapTileHeight;y++)
                             for(int x=1;x<mapTileWidth-1;x++)
                             {
                                 if(rightMap[y][x]!=0
                                    &&rightMap[y-1][x-1]==0&&rightMap[y-1][x]==0&&rightMap[y-1][x+1]==0)
-                                if(rand()%100<= spawnRate*100)
                                 {
-                                    vector2f newEnemyPosition;
-                                    newEnemyPosition.x=x*tileSize+(player.chunkNumber+1)*screenWidth;
-                                    newEnemyPosition.y=y*tileSize-entityScalar*enemyHeight;
-                                    Enemies.push_back(Enemy(newEnemyPosition,enemyWidth,enemyHeight,groundType,ground));
-                                    if(x+7<mapTileWidth) x+=7;
-                                    else break;
+
+
+                                          if(rand()%100<=healItemSpawnRate*100)
+                                        {
+                                            vector2f newEnemyPosition;
+                                            newEnemyPosition.x=x*tileSize+(player.chunkNumber+1)*screenWidth;
+                                            newEnemyPosition.y=y*tileSize-entityScalar*enemyHeight;
+                                            Enemies.push_back(Enemy(newEnemyPosition,enemyWidth,enemyHeight,healItem,heal));
+                                        }
+                                        if(rand()%100>=100-ammoItemSpawnRate*100)
+                                        {
+                                            vector2f newEnemyPosition;
+                                            newEnemyPosition.x=x*tileSize+(player.chunkNumber+1)*screenWidth;
+                                            newEnemyPosition.y=y*tileSize-entityScalar*enemyHeight;
+                                            Enemies.push_back(Enemy(newEnemyPosition,enemyWidth,enemyHeight,ammoItem,ammo));
+                                        }
+
+                                        if(rand()%100<=spawnRate*100)
+                                        {
+                                            vector2f newEnemyPosition;
+                                            newEnemyPosition.x=x*tileSize+(player.chunkNumber+1)*screenWidth;
+                                            newEnemyPosition.y=y*tileSize-entityScalar*enemyHeight;
+                                            Enemies.push_back(Enemy(newEnemyPosition,enemyWidth,enemyHeight,groundType,ground));
+                                            if(x+7<mapTileWidth) x+=7;
+                                            else break;
+                                        }
+
                                 }
 
                                 if(rightMap[y-1][x-1]==0&&rightMap[y-1][x]==0&&rightMap[y-1][x+1]==0
                                 &&rightMap[y][x-1]==0&&rightMap[y][x]==0&&rightMap[y][x+1]==0
                                 &&rightMap[y+1][x-1]==0&&rightMap[y+1][x]==0&&rightMap[y+1][x+1]==0)
-
                                 {
                                     if(rand()%1000<2)
                                     {

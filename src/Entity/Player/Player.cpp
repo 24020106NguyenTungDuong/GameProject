@@ -2,7 +2,7 @@
 #include "constants.hpp"
 #include "utils.hpp"
 
-void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &mouseState,int mouseX,int mouseY,Projectile &slashProjectile, float timeAcumulator,camera Cam,const PlaySound &allSound)
+void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &mouseState,int mouseX,int mouseY,Projectile &slashProjectile,Projectile &bulletProjectile, float timeAcumulator,camera Cam,const PlaySound &allSound)
 {
 
     SDL_Rect dst;
@@ -12,8 +12,8 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
 	dst.h=currentFrame.h * entityScalar;
     float dx = mouseX - screenWidth/2;
     float dy = mouseY - centerEntity().y;
-    vector2f dashVector=vector2f(dx,dy);
-    dashVector.normalise();
+    vector2f toMouseVector=vector2f(dx,dy);
+    toMouseVector.normalise();
     float currentTime=utils::getTimeSeconds();
 
 
@@ -65,6 +65,7 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
 
 
 
+
    if(isDashing)
    {
        if(currentTime-dashStartTime>dashTimer)
@@ -79,7 +80,7 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
        }
        else
        {
-           velocity=dashVector*dashSpeed;
+           velocity=toMouseVector*dashSpeed;
            goto Movement;
        }
 
@@ -153,6 +154,29 @@ Movement:
 
             playSound(allSound.slashSound,SFXVolume);
     }
+
+       if( keystates[SDL_SCANCODE_S] && ammo)
+   {
+       bulletProjectile.active=1;
+       bulletProjectile.position=position;
+       bulletProjectile.velocity=toMouseVector*bulletSpeed;
+        bulletProjectile.rotateCenter={entityScalar*currentFrame.w/2,entityScalar*currentFrame.h/2};
+        bulletProjectile.rotateAngle=atan2(dy,dx)*180.0/M_PI;
+        if(bulletProjectile.rotateAngle<-90||bulletProjectile.rotateAngle>90)
+        bulletProjectile.spriteFlip=SDL_FLIP_VERTICAL;
+        else bulletProjectile.spriteFlip=SDL_FLIP_NONE;
+        ammo=0;
+        playSound(allSound.bulletSound,SFXVolume);
+   }
+
+   if(distance(bulletProjectile.position,position)>=2*screenWidth)
+        bulletProjectile.active=0;
+
+
+   if(bulletProjectile.active)
+   {
+       bulletProjectile.Move();
+   }
 
     if(isSlashing)
     {

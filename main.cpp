@@ -17,8 +17,82 @@
 #include "chunkMap/chunkMap.hpp"
 #include "Enemy.hpp"
 using namespace std;
+void renderMenu(Uint32 mouseState,int mouseX,int mouseY,RenderWindow &window,bool &inMenu,bool &inHelp,bool &endScreen,bool &gameRunning,SDL_Texture* Menu)
+{
+                            window.renderPNG(Menu);
+            if(mouseX<=170&&mouseX>=100&&mouseY>=520&&mouseY<=544)
+            {
+                window.renderText("Start",vector2f(100,screenHeight-120));
+                if( mouseState & SDL_BUTTON_LEFT) inMenu=0;
+            }
+            else  window.renderText("Start",vector2f(100,screenHeight-120),chosenColor);
+
+            if(mouseX<=170&&mouseX>=100&&mouseY>=544&&mouseY<=568)
+            {
+                window.renderText("Help",vector2f(100,screenHeight-96));
+                if( mouseState & SDL_BUTTON_LEFT) inHelp=1;
+            }
+            else window.renderText("Help",vector2f(100,screenHeight-96),chosenColor);
+
+            if(mouseX<=170&&mouseX>=100&&mouseY>=568&&mouseY<=592)
+            {
+                window.renderText("Exit",vector2f(100,screenHeight-72));
+                if( mouseState & SDL_BUTTON_LEFT) {endScreen=0;inMenu=0;gameRunning=0;}
+            }
+            else  window.renderText("Exit",vector2f(100,screenHeight-72),chosenColor);
 
 
+
+            window.renderCursor(mouseX,mouseY);
+            window.Display();
+}
+
+void renderHelp(Uint32 mouseState,int mouseX,int mouseY,RenderWindow &window,bool &inMenu,bool &inHelp,SDL_Texture* Menu)
+{
+       window.ClearScreen();
+
+                window.renderPNG(Menu);
+                window.renderText("A/D or Left/Right Arrow to move",vector2f(100,100),chosenColor);
+                window.renderText("Left click to slash",vector2f(100,124),chosenColor);
+                window.renderText("S to fire a bullet when you have ammo",vector2f(100,148),chosenColor);
+                window.renderText("Right click to dash",vector2f(100,172),chosenColor);
+                window.renderText("Hold SPACE/Up Arrow to jump high",vector2f(100,196),chosenColor);
+                window.renderText("Press SPACE/Up Arrpw to jump low",vector2f(100,220),chosenColor);
+                window.renderText("When in game press ESC to pause",vector2f(100,244),chosenColor);
+                window.renderText("You can damage enemies by slashing, shooting, dashing at them or jumping on them",vector2f(100,268),chosenColor);
+                window.renderText("Enjoy!!",vector2f(100,268),chosenColor);
+
+                if(mouseX<=screenWidth/2+40&&mouseX>=screenWidth/2-30&&mouseY>=576&&mouseY<=600)
+                {
+                    window.renderText("Menu",vector2f(screenWidth/2-30,screenHeight-64));
+                    if( mouseState & SDL_BUTTON_LEFT) inHelp=0;
+                }
+                else  window.renderText("Menu",vector2f(screenWidth/2-30,screenHeight-64),chosenColor);
+
+            window.renderCursor(mouseX,mouseY);
+            window.Display();
+}
+void renderPause(Uint32 mouseState,int mouseX,int mouseY,RenderWindow &window,bool &pause,bool &replay,SDL_Texture* pausecreen)
+{
+                    window.renderPNG(pausecreen);
+                if(mouseX<=450&&mouseX>=380&&mouseY>=320&&mouseY<=344)
+                {
+                    window.renderText("Resume",vector2f(screenWidth/2-100,screenHeight/2));
+                    if( mouseState & SDL_BUTTON_LEFT) pause=0;
+                }
+                else window.renderText("Resume",vector2f(screenWidth/2-100,screenHeight/2),chosenColor);
+
+                if(mouseX<=450&&mouseX>=380&&mouseY>=344&&mouseY<=368)
+                {
+                    window.renderText("Restart",vector2f(screenWidth/2-100,screenHeight/2+24));
+                    if( mouseState & SDL_BUTTON_LEFT) {pause=0;replay=1;}
+
+                }
+                else window.renderText("Restart",vector2f(screenWidth/2-100,screenHeight/2+24),chosenColor);
+                window.renderCursor(mouseX,mouseY);
+                window.Display();
+
+}
 int main(int argc, char *argv[])
 {
     srand(time(0));
@@ -44,6 +118,7 @@ int main(int argc, char *argv[])
     RenderWindow window("Slash and Dash",screenWidth,screenHeight);
     SDL_Texture* testTexture=window.LoadTexture("res/graphics/playerSprite/player.png");
     SDL_Texture* slashTexture=window.LoadTexture("res/graphics/playerSprite/slash.png");
+    SDL_Texture* bulletTexture=window.LoadTexture("res/graphics/playerSprite/bullet.png");
     SDL_Texture* Cursor=window.LoadTexture("res/graphics/playerSprite/cursor.png");
     SDL_ShowCursor(SDL_DISABLE);
     PlaySound allSound;
@@ -74,6 +149,7 @@ int main(int argc, char *argv[])
 
     Player player(playerStartPosition,playerWidth,playerHeight,testTexture);
     Projectile slashing(vector2f(0,0),slashWidth,slashHeight,slashTexture);
+    Projectile bullet((vector2f(0,0)),bulletWidth,bulletHeight,bulletTexture);
 
     player.chunkNumber=player.position.x/screenWidth;
     camera Cam;
@@ -91,12 +167,16 @@ int main(int argc, char *argv[])
 
     SDL_Texture* groundType=window.LoadTexture("res/graphics/EnemySprite/groundType.png");
     SDL_Texture* flyType=window.LoadTexture("res/graphics/EnemySprite/flyType.png");
+    SDL_Texture* healItem=window.LoadTexture("res/graphics/ItemSprite/heal.png");
+    SDL_Texture* ammoItem=window.LoadTexture("res/graphics/ItemSprite/ammo.png");
     SDL_Texture* wall=window.LoadTexture("res/graphics/Wall/wall.png");
     Enemy wallOfFlesh(vector2f(Cam.viewPortion.x,0),wallWidth,wallHeight,wall);
 
     bool gameRunning=1;
     bool endScreen=1;
     bool pause=0;
+    bool replay=0;
+    bool inHelp=0;
     int frameCount=0;
     int currentFPS=60;
     int currentScore=0;
@@ -166,50 +246,22 @@ int main(int argc, char *argv[])
                                             if(currentFPS<FPS) FPSadjust-=0.5f;
                                             else if(currentFPS>FPS+FPSrange) FPSadjust+=0.05f;
                                  }
-
-
-        if(inMenu)
+        if(inHelp)
         {
-
-            window.renderPNG(Menu);
-            if(mouseX<=170&&mouseX>=100&&mouseY>=544&&mouseY<=568)
-            {
-                window.renderText("Start",vector2f(100,screenHeight-96));
-                if( mouseState & SDL_BUTTON_LEFT) inMenu=0;
-            }
-            else window.renderText("Start",vector2f(100,screenHeight-96),chosenColor);
-
-            if(mouseX<=170&&mouseX>=100&&mouseY>=568&&mouseY<=592)
-            {
-                window.renderText("Exit",vector2f(100,screenHeight-72));
-                if( mouseState & SDL_BUTTON_LEFT) goto EndGame;
-            }
-            else  window.renderText("Exit",vector2f(100,screenHeight-72),chosenColor);
-
-            window.renderCursor(mouseX,mouseY);
-            window.Display();
+            renderHelp(mouseState,mouseX,mouseY,window,inMenu,inHelp,Menu);
             continue;
         }
-        if(pause==1) {
-                window.renderPNG(pausecreen);
-                if(mouseX<=450&&mouseX>=380&&mouseY>=320&&mouseY<=344)
-                {
-                    window.renderText("Resume",vector2f(screenWidth/2-100,screenHeight/2));
-                    if( mouseState & SDL_BUTTON_LEFT) pause=0;
-                }
-                else window.renderText("Resume",vector2f(screenWidth/2-100,screenHeight/2),chosenColor);
-
-                if(mouseX<=450&&mouseX>=380&&mouseY>=344&&mouseY<=368)
-                {
-                    window.renderText("Restart",vector2f(screenWidth/2-100,screenHeight/2+24));
-                    if( mouseState & SDL_BUTTON_LEFT) goto GameStart;
-
-                }
-                else window.renderText("Restart",vector2f(screenWidth/2-100,screenHeight/2+24),chosenColor);
-                window.renderCursor(mouseX,mouseY);
-                window.Display();
-                continue;
-                    }
+        if(inMenu)
+        {
+            renderMenu(mouseState,mouseX,mouseY,window,inMenu,inHelp,endScreen,gameRunning,Menu);
+            continue;
+        }
+        if(pause==1)
+        {
+            renderPause(mouseState,mouseX,mouseY,window,pause,replay,pausecreen);
+            if(replay) goto GameStart;
+            continue;
+        }
 
 
 
@@ -217,13 +269,14 @@ int main(int argc, char *argv[])
 
 
 
-        player.updatePlayer(keystates,event, mouseState,mouseX,mouseY, slashing ,timeAcumulator,Cam,allSound);
+
+        player.updatePlayer(keystates,event, mouseState,mouseX,mouseY, slashing, bullet ,timeAcumulator,Cam,allSound);
         deleteInvalidEnemis(player,enemiesKilled,Enemies);
 
 
           for(int i=0;i<Enemies.size();i++)
         {
-            Enemies[i].collisionPlayer(player,slashing);
+            Enemies[i].collisionPlayer(player,slashing,bullet);
             Enemies[i].updateEnemy(player,currentTime,timeAcumulator);
         }
 
@@ -249,7 +302,7 @@ int main(int argc, char *argv[])
                     usedMap[mapIndex]=1;
         inputMap(rightMap,basePath+to_string(mapIndex)+".txt");
         loadChunk(rightMap,greenBrick,platform,rightChunk,1,player.chunkNumber);
-                spawnEnemies(player,groundType,flyType,rightMap,Enemies);
+                spawnEnemies(player,groundType,flyType,healItem,ammoItem,rightMap,Enemies);
             }
         //updateLeftMap when enter new left map
          if(int(player.position.x/screenWidth)<player.chunkNumber)
@@ -293,6 +346,10 @@ int main(int argc, char *argv[])
         {
             window.RenderTexture(slashing,Cam);
         }
+        if(bullet.active)
+        {
+            window.RenderTexture(bullet,Cam);
+        }
 
         if(player.HP<=0)
                 {
@@ -308,10 +365,10 @@ int main(int argc, char *argv[])
 
 
         window.renderText( ("HP: "+to_string(player.HP)).c_str(),HPPosition);
+        window.renderText( ("Ammo: "+to_string(player.ammo)).c_str(),ammoPosition);
         window.renderText( ("FPS: "+to_string(currentFPS)).c_str(),FPSPosition);
         window.renderText( ("Score: "+to_string(currentScore)).c_str(),scorePosition);
         window.renderText( ("Highscore: "+to_string(highScore)).c_str(),highScorePosition);
-
         window.renderCursor(mouseX,mouseY);
         window.Display();
 
