@@ -138,7 +138,7 @@ void Enemy::collisionPlayer(Player &p_player,Projectile p_slash,Projectile p_bul
     {
         if(checkEntityCollision(p_player))
         {
-            p_player.ammo=1;
+            p_player.ammo=min(p_player.ammo+1,ammoCount);
             HP=0;
         }
         return;
