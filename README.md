@@ -1,6 +1,8 @@
 # GameProject
  Họ và tên: Nguyễn Tùng Dương
+
  Mssv: 24020106
+ 
  Đây là tựa game "Slash and Dash", game đầu tay của tôi phát triển bằng ngôn ngữ C++ cùng với thư viện đồ họa SDL2 cùng với các thư viện bổ trợ như SDL_mixer, SDL_ttf.
  Slash and Dash là nơi bạn parkour và chiến đấu với kẻ thù trên bản đồ cuộn ngang trải dài vô tận.Mục tiêu của bạn là sống sót thật lâu và tiêu diệt càng nhiều kẻ địch để đạt được điểm số cao.
 
@@ -21,7 +23,7 @@
 
  -Space, W, mũi tên lên để nhảy; giữ lâu để nhảy cao hơn.
  
- - S để bắn khi còn đạn.
+ -S để bắn khi còn đạn.
 
  -Chuột trái để tấn công về phía con trò.
 
@@ -34,6 +36,7 @@
  Mục tiêu game:
 
  -Bạn có 10 HP, hãy cố gắng để sống sót lâu nhất và tiêu diệu nhiều kẻ địch.
+ 
  -Khi va chạm với kẻ địch HP của bạn giảm 1.
 
  -Khi rơi xuống vực HP của bạn giảm 2.
