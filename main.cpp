@@ -57,10 +57,10 @@ void renderHelp(Uint32 mouseState,int mouseX,int mouseY,RenderWindow &window,boo
                 window.renderText("S to fire a bullet when you have ammo",vector2f(100,148),chosenColor);
                 window.renderText("Right click to dash",vector2f(100,172),chosenColor);
                 window.renderText("Hold SPACE/Up Arrow to jump high",vector2f(100,196),chosenColor);
-                window.renderText("Press SPACE/Up Arrpw to jump low",vector2f(100,220),chosenColor);
+                window.renderText("Press SPACE/Up Arrow to jump low",vector2f(100,220),chosenColor);
                 window.renderText("When in game press ESC to pause",vector2f(100,244),chosenColor);
-                window.renderText("You can damage enemies by slashing, shooting, dashing at them or jumping on them",vector2f(100,268),chosenColor);
-                window.renderText("Enjoy!!",vector2f(100,268),chosenColor);
+                window.renderText("You can damage enemies by slashing, dashing or jumping on them",vector2f(100,268),chosenColor);
+                window.renderText("Enjoy!!",vector2f(100,292),chosenColor);
 
                 if(mouseX<=screenWidth/2+40&&mouseX>=screenWidth/2-30&&mouseY>=576&&mouseY<=600)
                 {

@@ -40,10 +40,12 @@ const float JumpForce=-10.0f;
 const float jumpTimer=0.3f;
 const float dashTimer=0.2f;
 const float dashCooldown=1.0f;
+const float bulletCooldown=0.5f;
 const float immunityTime=0.2f;
 const float slashTimer = 0.8f;
 const float slashFallSpeed=3.0f;
 const int bulletSpeed=20;
+const int ammoCount=5;
 //size constant
 const int playerWidth = 24;
 const int playerHeight = 24;

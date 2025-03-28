@@ -22,7 +22,7 @@ class Player: public Entity
     bool isSlashing=0;
     bool isDashCooldown=0;
     bool hasPlayedRunningSound=0;
-    bool ammo=1;
+    int ammo=ammoCount;
     PlayerState currentState=StandingStill;
     void updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &mouseState,int mouseX,int mouseY, Projectile &slashProjectile,Projectile &bulletProjectile , float timeAcumulator,camera Cam,const PlaySound &allSound);
     void updateProjectile(Projectile &p_projectile,Uint32 &mouseState);
@@ -31,7 +31,8 @@ class Player: public Entity
      float jumpStartTime;
     float dashStartTime;
     float dashCooldownTime;
-
+    float shootStartTime;
+    bool isBulletCooldown=0;
 
 };
 //Mix_Chunk* slashSound = Mix_LoadWAV("res/SFX/slash.wav");

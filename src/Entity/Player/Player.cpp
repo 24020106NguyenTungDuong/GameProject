@@ -155,8 +155,12 @@ Movement:
             playSound(allSound.slashSound,SFXVolume);
     }
 
-       if( keystates[SDL_SCANCODE_S] && ammo)
+    if(!isBulletCooldown)
+        shootStartTime=currentTime;
+
+       if( keystates[SDL_SCANCODE_S] && ammo && !isBulletCooldown)
    {
+       isBulletCooldown=1;
        bulletProjectile.active=1;
        bulletProjectile.position=position;
        bulletProjectile.velocity=toMouseVector*bulletSpeed;
@@ -165,10 +169,13 @@ Movement:
         if(bulletProjectile.rotateAngle<-90||bulletProjectile.rotateAngle>90)
         bulletProjectile.spriteFlip=SDL_FLIP_VERTICAL;
         else bulletProjectile.spriteFlip=SDL_FLIP_NONE;
-        ammo=0;
+        ammo--;
         playSound(allSound.bulletSound,SFXVolume);
    }
-
+   if(isBulletCooldown&&currentTime-shootStartTime>=bulletCooldown)
+            {
+                isBulletCooldown=0;
+            }
    if(distance(bulletProjectile.position,position)>=2*screenWidth)
         bulletProjectile.active=0;
 
@@ -207,7 +214,7 @@ Movement:
                             currentFrame.y=animationRow*playerHeight;
                             currentFrame.x = (int(timeAcumulator/timeStep)%6)*playerWidth;
 
-                                        playSound(allSound.runningSound,SFXVolume);
+                                    playSound(allSound.runningSound,SFXVolume);
                             break;
         case Jumping      : currentFrame.y=2*playerHeight;
                             currentFrame.x=0;
