@@ -23,7 +23,7 @@
 
  -Space, W, mũi tên lên để nhảy; giữ lâu để nhảy cao hơn.
  
- -S để bắn khi còn đạn.
+ -S/ mũi tên xuống để bắn khi còn đạn.
 
  -Chuột trái để tấn công về phía con trò.
 
