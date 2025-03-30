@@ -175,7 +175,7 @@ void Enemy::collisionPlayer(Player &p_player,Projectile p_slash,Projectile p_bul
         p_player.isAirborne=1;
         p_player.currentState=ImmuneDame;
         p_player.HP--;
-        velocity.x=-velocity.x;
+        velocity=velocity*(-1);
         }
     }
 

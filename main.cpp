@@ -54,7 +54,7 @@ void renderHelp(Uint32 mouseState,int mouseX,int mouseY,RenderWindow &window,boo
                 window.renderPNG(Menu);
                 window.renderText("A/D or Left/Right Arrow to move",vector2f(100,100),chosenColor);
                 window.renderText("Left click to slash",vector2f(100,124),chosenColor);
-                window.renderText("S to fire a bullet when you have ammo",vector2f(100,148),chosenColor);
+                window.renderText("S/Down Arrow to fire a bullet when you have ammo",vector2f(100,148),chosenColor);
                 window.renderText("Right click to dash",vector2f(100,172),chosenColor);
                 window.renderText("Hold SPACE/Up Arrow to jump high",vector2f(100,196),chosenColor);
                 window.renderText("Press SPACE/Up Arrow to jump low",vector2f(100,220),chosenColor);

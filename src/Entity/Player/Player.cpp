@@ -122,7 +122,7 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
     if(velocity.x==0)
         currentState=StandingStill;
 
-        if(position.y>screenHeight-entityScalar*playerHeight/2)
+        if(position.y>screenHeight-entityScalar*playerHeight/2-tileSize)
         {
             position.y=entityScalar*playerHeight/2;
             velocity.y=1;
@@ -158,7 +158,7 @@ Movement:
     if(!isBulletCooldown)
         shootStartTime=currentTime;
 
-       if( keystates[SDL_SCANCODE_S] && ammo && !isBulletCooldown)
+       if( ( keystates[SDL_SCANCODE_S] || keystates[SDL_SCANCODE_DOWN] ) && ammo && !isBulletCooldown)
    {
        isBulletCooldown=1;
        bulletProjectile.active=1;
