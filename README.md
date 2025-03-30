@@ -16,6 +16,11 @@
 
  -Nhạc nền, hiệu ứng âm thanh chém, di chuyển và lướt.
 
+Cách tải game:
+
+-Download code trực tiếp thành file zip, giải nén và chạy file "Slash and Dash.exe" để khởi động game
+
+
 
  Cách chơi:
 

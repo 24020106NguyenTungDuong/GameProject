@@ -62,8 +62,8 @@ const int wallHeight=screenHeight/2;
 //enemy constant
 const int playerHP=10;
 const int enemyHP=3;
-const float enemyPushY=-5;
-const float enemyPushX=6;
+const float enemyPushY=-6;
+const float enemyPushX=8;
 const float enemyDetectRange=7.0f;
 const float enemyPatrolSpeed=2.0f;
 const float enemyFollowAcceleration=0.1f;
