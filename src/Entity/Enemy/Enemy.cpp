@@ -10,8 +10,10 @@ void Enemy::updateEnemy(Player p_player,float currentTime,float timeAcumulator)
    {
        immuneDame=0;
    }
+   //skip all movement when in immune dame state
    if(immuneDame)  goto Movement;
 
+   //handle enemy's patrolling and following behaviour
     if(enemyType==ground)
     {
                 if(distance(position,p_player.position)<=enemyDetectRange*tileSize)
@@ -21,9 +23,10 @@ void Enemy::updateEnemy(Player p_player,float currentTime,float timeAcumulator)
                     if(isFollowing)
                 {
                     if(abs(velocity.x)<=enemyPatrolSpeed) {velocity.x=enemyPatrolSpeed*sign(p_player.position.x-position.x);}
+                    //enemy accelerates when following player
                     if(p_player.position.x>position.x)
                     velocity.x+=enemyFollowAcceleration;
-                else if(p_player.position.x<position.x) velocity.x-=enemyFollowAcceleration;
+                    else if(p_player.position.x<position.x) velocity.x-=enemyFollowAcceleration;
 
                   currentFrame.x = (int(timeAcumulator/timeStep)%3+8)*enemyWidth;
                 }
@@ -60,6 +63,7 @@ void Enemy::updateEnemy(Player p_player,float currentTime,float timeAcumulator)
 
 
     }
+    //all other enemy types are item
     else
     {
         currentFrame.x=(int(timeAcumulator/timeStep)%8)*enemyWidth;
@@ -83,36 +87,39 @@ void Enemy::updateEnemy(Player p_player,float currentTime,float timeAcumulator)
 void Enemy::collisionMap(Player p_player,int leftMap[][mapTileWidth],int centerMap[][mapTileWidth],int rightMap[][mapTileWidth])
 {
     if(chunkNumber==p_player.chunkNumber)
-        {checkTileCollision(centerMap);
-        if(enemyType==ground&&!isOnPlatform(centerMap))
         {
-            position.x=position.x-velocity.x;
-            velocity.x=0;
-        }
+            checkTileCollision(centerMap);
+            if(enemyType==ground&&!isOnPlatform(centerMap))
+            {
+                position.x=position.x-velocity.x;
+                velocity.x=0;
+            }
         }
         else if(chunkNumber>p_player.chunkNumber)
-        {checkTileCollision(rightMap);
-
-                if(enemyType==ground&&!isOnPlatform(rightMap))
         {
-            position.x=position.x-velocity.x;
-            velocity.x=0;
-        }
+            checkTileCollision(rightMap);
+
+                    if(enemyType==ground&&!isOnPlatform(rightMap))
+            {
+                position.x=position.x-velocity.x;
+                velocity.x=0;
+            }
         }
         else
         {checkTileCollision(leftMap);
 
-                if(enemyType==ground&&!isOnPlatform(leftMap))
-        {
-            position.x=position.x-velocity.x;
-            velocity.x=0;
-        }
+                    if(enemyType==ground&&!isOnPlatform(leftMap))
+            {
+                position.x=position.x-velocity.x;
+                velocity.x=0;
+            }
         }
 
 
 }
 bool Enemy::checkSlashCollision(Player p_player,Projectile p_slash)
 {
+    //caculate enemy's distance to player and angle between player with enemy and cursor
     vector2f dxdy=centerEntity()+(p_player.centerEntity()*(-1));
     float distanceToEnemy=distance(centerEntity(),p_player.centerEntity());
     if(distanceToEnemy>attackRange) return 0;
@@ -143,6 +150,7 @@ void Enemy::collisionPlayer(Player &p_player,Projectile p_slash,Projectile p_bul
         }
         return;
     }
+    //enemy dies instantly when hit by bullet
     if(p_bullet.active&&checkEntityCollision(p_bullet))
         HP=0;
 
@@ -152,6 +160,7 @@ void Enemy::collisionPlayer(Player &p_player,Projectile p_slash,Projectile p_bul
             HP--;
             immuneDame=1;
     }
+    //take dame when player jump in top
     if(checkEntityCollision(p_player)&&p_player.currentState==Falling )
     {
          velocity.x=0;
@@ -187,7 +196,9 @@ void Enemy::updateWall(Player &p_player,float timeAccumulator,camera Cam)
 {
     velocity.x=0.3f*MoveSpeed;
     Move();
+    //keep the wall in the left of screen
     position.x=max(float(Cam.viewPortion.x-50),position.x);
+    //collison with player
     if(p_player.position.x<position.x+wallWidth)
     {
         p_player.velocity.x=2*MoveSpeed;

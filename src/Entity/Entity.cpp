@@ -61,7 +61,7 @@ bool Entity::checkEntityCollision(Entity p_entity)
 void Entity::handleColision(const SDL_Rect& dstTile,int tileType)
 {
 
-    //Huong va cham
+    //collision direction
     float left=rightSide()-dstTile.x;
     float right=(dstTile.x+tileSize)-position.x;
     float bot=dstTile.y+tileSize-position.y;
@@ -99,7 +99,7 @@ void Entity::handleColision(const SDL_Rect& dstTile,int tileType)
     }
 
     }
-
+    //can pass through platformer from below
     if(tileType==platformer)
     {
             if(minCollision==top&&velocity.y>0)
@@ -137,11 +137,13 @@ bool Entity::isOnPlatform(int p_mapTile[][mapTileWidth])
 }
 void Entity::checkTileCollision(int p_mapTile[][mapTileWidth])
 {
+    //cannot pass through top of the screen
         if(position.y<0)
         {
             position.y=0;
             velocity.y=1;
         }
+    //nearby tiles
     int leftTile=(position.x-1)/tileSize;
     int rightTile=(rightSide()+1)/tileSize;
     int topTile=(position.y-1)/tileSize;

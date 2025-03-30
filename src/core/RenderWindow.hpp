@@ -27,8 +27,8 @@ class RenderWindow
         void renderCursor(int mouseX,int mouseY);
         void renderText(const char* text,vector2f textPosition,SDL_Color textColor=textcolor);
     private:
-        SDL_Renderer* renderer;
         SDL_Window* window;
+        SDL_Renderer* renderer;
         TTF_Font* font;
         SDL_Texture* background;
         SDL_Texture* cursor;

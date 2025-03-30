@@ -17,7 +17,7 @@
 #include "chunkMap/chunkMap.hpp"
 #include "Enemy.hpp"
 using namespace std;
-void renderMenu(Uint32 mouseState,int mouseX,int mouseY,RenderWindow &window,bool &inMenu,bool &inHelp,bool &endScreen,bool &gameRunning,SDL_Texture* Menu)
+void renderMenu(Uint32 mouseState,int mouseX,int mouseY,RenderWindow &window,bool &inMenu,bool &inHelp,bool &gameOver,bool &gameRunning,SDL_Texture* Menu)
 {
                             window.renderPNG(Menu);
             if(mouseX<=170&&mouseX>=100&&mouseY>=520&&mouseY<=544)
@@ -37,7 +37,7 @@ void renderMenu(Uint32 mouseState,int mouseX,int mouseY,RenderWindow &window,boo
             if(mouseX<=170&&mouseX>=100&&mouseY>=568&&mouseY<=592)
             {
                 window.renderText("Exit",vector2f(100,screenHeight-72));
-                if( mouseState & SDL_BUTTON_LEFT) {endScreen=0;inMenu=0;gameRunning=0;}
+                if( mouseState & SDL_BUTTON_LEFT) {gameOver=0;inMenu=0;gameRunning=0;}
             }
             else  window.renderText("Exit",vector2f(100,screenHeight-72),chosenColor);
 
@@ -93,6 +93,15 @@ void renderPause(Uint32 mouseState,int mouseX,int mouseY,RenderWindow &window,bo
                 window.Display();
 
 }
+void Cleanup(vector<SDL_Texture*>& textures) {
+    for (SDL_Texture*& texture:textures) {
+        if (texture!=nullptr) {
+            SDL_DestroyTexture(texture);
+            texture=nullptr;
+        }
+    }
+}
+
 int main(int argc, char *argv[])
 {
     srand(time(0));
@@ -115,15 +124,28 @@ int main(int argc, char *argv[])
             cout<<"SDL_mixer Init failed: "<<Mix_GetError()<<endl;
             return 1;
         }
+    //prepare all game resources
     RenderWindow window("Slash and Dash",screenWidth,screenHeight);
     SDL_Texture* testTexture=window.LoadTexture("res/graphics/playerSprite/player.png");
     SDL_Texture* slashTexture=window.LoadTexture("res/graphics/playerSprite/slash.png");
     SDL_Texture* bulletTexture=window.LoadTexture("res/graphics/playerSprite/bullet.png");
     SDL_Texture* Cursor=window.LoadTexture("res/graphics/playerSprite/cursor.png");
+    SDL_Texture* greenBrick=window.LoadTexture("res/graphics/tileMap/solidTile.png");
+    SDL_Texture* platform=window.LoadTexture("res/graphics/tileMap/platform.png");
+    SDL_Texture* pausecreen=window.LoadTexture("res/graphics/blank.png");
+    SDL_Texture* Menu=window.LoadTexture("res/graphics/menu.png");
+    SDL_Texture* groundType=window.LoadTexture("res/graphics/EnemySprite/groundType.png");
+    SDL_Texture* flyType=window.LoadTexture("res/graphics/EnemySprite/flyType.png");
+    SDL_Texture* healItem=window.LoadTexture("res/graphics/ItemSprite/heal.png");
+    SDL_Texture* ammoItem=window.LoadTexture("res/graphics/ItemSprite/ammo.png");
+    SDL_Texture* wall=window.LoadTexture("res/graphics/Wall/wall.png");
+
     SDL_ShowCursor(SDL_DISABLE);
+
     PlaySound allSound;
 
     TTF_Font* font = TTF_OpenFont("res/font/8bitOperatorPlus-Regular.ttf", 24);
+
     if (!font) {
         cout <<"Font loading failed:"<<TTF_GetError()<<endl;
         return 1;
@@ -135,50 +157,48 @@ int main(int argc, char *argv[])
 
 
 
+    //play background music
     Mix_PlayMusic(allSound.backgroundMusic,-1);
     Mix_VolumeMusic(musicVolume);
+
     bool inMenu=1;
 
+    // game start flag
     GameStart:
 
-    bool usedMap[numberOfMaps+5]={0};
+    //maps that have been used in each cycle
+    bool usedMap[numberOfMaps+1]={0};
     int numberOfUsedMaps=0;
 
-    inputMap(centerMap,mapList[0]);
+    //prepare first map
+    inputMap(centerMap,basePath+"1.txt");
     inputMap(rightMap,basePath+to_string(rand()%numberOfMaps)+".txt");
 
     Player player(playerStartPosition,playerWidth,playerHeight,testTexture);
     Projectile slashing(vector2f(0,0),slashWidth,slashHeight,slashTexture);
     Projectile bullet((vector2f(0,0)),bulletWidth,bulletHeight,bulletTexture);
-
-    player.chunkNumber=player.position.x/screenWidth;
     camera Cam;
+    //update player's chunk number
+    player.chunkNumber=player.position.x/screenWidth;
 
 
-    SDL_Texture* greenBrick=window.LoadTexture("res/graphics/tileMap/solidTile.png");
-    SDL_Texture* platform=window.LoadTexture("res/graphics/tileMap/platform.png");
-    SDL_Texture* pausecreen=window.LoadTexture("res/graphics/blank.png");
-    SDL_Texture* Menu=window.LoadTexture("res/graphics/menu.png");
-
-    loadChunk(centerMap,greenBrick,platform,centerChunk,0,player.chunkNumber);
-    loadChunk(rightMap,greenBrick,platform,rightChunk,1,player.chunkNumber);
-    loadChunk(leftMap,greenBrick,platform,leftChunk,-1,player.chunkNumber);
 
 
-    SDL_Texture* groundType=window.LoadTexture("res/graphics/EnemySprite/groundType.png");
-    SDL_Texture* flyType=window.LoadTexture("res/graphics/EnemySprite/flyType.png");
-    SDL_Texture* healItem=window.LoadTexture("res/graphics/ItemSprite/heal.png");
-    SDL_Texture* ammoItem=window.LoadTexture("res/graphics/ItemSprite/ammo.png");
-    SDL_Texture* wall=window.LoadTexture("res/graphics/Wall/wall.png");
+
+    //create tile from 2d map array
+    loadChunk(centerMap,greenBrick,platform,centerChunk,inCenter,player.chunkNumber);
+    loadChunk(rightMap,greenBrick,platform,rightChunk,inRight,player.chunkNumber);
+    loadChunk(leftMap,greenBrick,platform,leftChunk,inLeft,player.chunkNumber);
+
+
+    //the wall that chases player
     Enemy wallOfFlesh(vector2f(Cam.viewPortion.x,0),wallWidth,wallHeight,wall);
 
     bool gameRunning=1;
-    bool endScreen=1;
+    bool gameOver=1;
     bool pause=0;
     bool replay=0;
     bool inHelp=0;
-    int frameCount=0;
-    int currentFPS=60;
     int currentScore=0;
     int highScore=0;
     int enemiesKilled=0;
@@ -193,12 +213,16 @@ int main(int argc, char *argv[])
 
     SDL_Event event;
 
+
+    //time management
     float startLoopTime=utils::getTimeSeconds();
     float currentTime=0.0f;
     float timeAcumulator=0.0f;
     float frameTime=0;
+    int frameCount=0;
+    int currentFPS=60;
 
-
+    //main gameloop
     while(gameRunning)
     {
 
@@ -208,7 +232,7 @@ int main(int argc, char *argv[])
             if(event.type==SDL_QUIT)
                 {
                     gameRunning=0;
-                    endScreen=0;
+                    gameOver=0;
                     break;
                 }
                 if(event.type==SDL_KEYDOWN&&event.key.keysym.sym==SDLK_ESCAPE)
@@ -227,17 +251,20 @@ int main(int argc, char *argv[])
                 };
 
         }
-
+        //get key and mouse state
         const Uint8* keystates=SDL_GetKeyboardState(NULL);
         int mouseX, mouseY;
         Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
 
+
+        //get time in each game loop and count the frame
         currentTime=utils::getTimeSeconds();
-        frameTime=currentTime-startLoopTime;
         frameTime=currentTime-startLoopTime;
         timeAcumulator+=frameTime;
         startLoopTime=currentTime;
         frameCount++;
+
+        //adjust FPS to be around 60
         SDL_Delay(frameDelay+FPSadjust);
         if(timeAcumulator>=1.0f) {
                                     timeAcumulator-=1.0f;
@@ -246,6 +273,7 @@ int main(int argc, char *argv[])
                                             if(currentFPS<FPS) FPSadjust-=0.5f;
                                             else if(currentFPS>FPS+FPSrange) FPSadjust+=0.05f;
                                  }
+
         if(inHelp)
         {
             renderHelp(mouseState,mouseX,mouseY,window,inMenu,inHelp,Menu);
@@ -253,7 +281,7 @@ int main(int argc, char *argv[])
         }
         if(inMenu)
         {
-            renderMenu(mouseState,mouseX,mouseY,window,inMenu,inHelp,endScreen,gameRunning,Menu);
+            renderMenu(mouseState,mouseX,mouseY,window,inMenu,inHelp,gameOver,gameRunning,Menu);
             continue;
         }
         if(pause==1)
@@ -269,11 +297,11 @@ int main(int argc, char *argv[])
 
 
 
-
+        //update player's movement and state
         player.updatePlayer(keystates,event, mouseState,mouseX,mouseY, slashing, bullet ,timeAcumulator,Cam,allSound);
         deleteInvalidEnemis(player,enemiesKilled,Enemies);
 
-
+        //check enemies collision and update their movement, state
           for(int i=0;i<Enemies.size();i++)
         {
             Enemies[i].collisionPlayer(player,slashing,bullet);
@@ -289,6 +317,8 @@ int main(int argc, char *argv[])
                 swap(centerChunk,leftChunk);
                 swap(centerMap,rightMap);
                 swap(centerChunk,rightChunk);
+
+                //chose random map that has not appear in this cycle
                            int mapIndex=rand()%numberOfMaps;
                            while(usedMap[mapIndex])
                             mapIndex=rand()%numberOfMaps;
@@ -300,8 +330,12 @@ int main(int argc, char *argv[])
                             usedMap[i]=0;
                     }
                     usedMap[mapIndex]=1;
+
+        //input map from file to 2d map array
         inputMap(rightMap,basePath+to_string(mapIndex)+".txt");
-        loadChunk(rightMap,greenBrick,platform,rightChunk,1,player.chunkNumber);
+        loadChunk(rightMap,greenBrick,platform,rightChunk,inRight,player.chunkNumber);
+
+
                 spawnEnemies(player,groundType,flyType,healItem,ammoItem,rightMap,Enemies);
             }
         //updateLeftMap when enter new left map
@@ -312,18 +346,18 @@ int main(int argc, char *argv[])
                 swap(leftChunk,centerChunk);
                 swap(leftMap,rightMap);
                 swap(leftChunk,rightChunk);
-                inputMap(leftMap,basePath+to_string(rand()%numberOfMaps)+".txt");
-                loadChunk(leftMap,greenBrick,platform,leftChunk,-1,player.chunkNumber);
             }
 
 
-
+        //check player collision with tiles
         player.checkTileCollision(centerMap);
 
-        slashing.updateProj(timeAcumulator);
+        //keep player in screen center
         Cam.updateCamera(player);
 
+
         window.ClearScreen();
+
         window.renderBackGround();
         window.renderChunk(Cam,leftChunk,centerChunk,rightChunk);
         window.RenderTexture(player,Cam);
@@ -375,8 +409,8 @@ int main(int argc, char *argv[])
 
     }
 
-
-    if(endScreen)
+    //game over screen
+    if(gameOver)
     {
     window.renderPNG(pausecreen);
     window.renderText( ("Score: "+to_string(currentScore)).c_str(),scorePosition);
@@ -387,14 +421,14 @@ int main(int argc, char *argv[])
     window.Display();
     }
 
-    while(endScreen)
+    while(gameOver)
     {
 
          while(SDL_PollEvent(&event))
         {
             if(event.type==SDL_QUIT)
                 {
-                    endScreen=0;
+                    gameOver=0;
                     goto EndGame;
                 }
 
@@ -409,10 +443,17 @@ int main(int argc, char *argv[])
     }
 
 
-
+    //free all the resources
     EndGame:
 
-    Mix_FreeMusic(allSound.backgroundMusic);
+    vector<SDL_Texture*> textures = {
+        testTexture, slashTexture, bulletTexture, Cursor, greenBrick, platform, pausecreen,
+        Menu, groundType, flyType, healItem, ammoItem, wall
+    };
+    TTF_CloseFont(font);
+    font=nullptr;
+    allSound.CleanUp();
+    Cleanup(textures);
     window.CleanUp();
 
     return 0;

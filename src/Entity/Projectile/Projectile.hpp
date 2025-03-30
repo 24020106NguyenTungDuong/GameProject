@@ -16,7 +16,6 @@ class Projectile: public Entity
 
     public:
         bool active=0;
-        void updateProj(float timeAcumulator);
         float spawnTime;
 
     private:

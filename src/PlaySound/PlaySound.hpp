@@ -23,6 +23,8 @@ class PlaySound
     Mix_Chunk* bulletSound;
     Mix_Chunk* runningSound;
     Mix_Chunk* jumpSound;
+    void CleanUp();
 };
  void playSound(Mix_Chunk* sfx,int volume);
+
 #endif // PLAYSOUND_HPP

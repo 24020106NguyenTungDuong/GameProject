@@ -8,4 +8,13 @@ void playSound(Mix_Chunk* sfx,int volume)
 
 
 }
-
+ void PlaySound::CleanUp()
+ {
+    Mix_FreeMusic(backgroundMusic);
+    Mix_FreeChunk(slashSound);
+    Mix_FreeChunk(dashSound);
+    Mix_FreeChunk(bulletSound);
+    Mix_FreeChunk(runningSound);
+    Mix_FreeChunk(jumpSound);
+        Mix_Quit();
+ }

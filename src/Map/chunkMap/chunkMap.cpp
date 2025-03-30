@@ -25,11 +25,11 @@ void loadChunk(int p_map[][mapTileWidth],SDL_Texture* greenBrick,SDL_Texture* pl
                 {
                     if(p_map[y][x]==solidTile)
                                     {
-                                        chunk.push_back(tileMap(greenBrick,vector2f(32*x+(chunkNumber+chunkPosition)*screenWidth,32*y),solidTile));
+                                        chunk.push_back(tileMap(greenBrick,vector2f(tileSize*x+(chunkNumber+chunkPosition)*screenWidth,tileSize*y),solidTile));
                                     }
                     else if(p_map[y][x]==platformer)
                                     {
-                                        chunk.push_back(tileMap(platform,vector2f(32*x+(chunkNumber+chunkPosition)*screenWidth,32*y),platformer));
+                                        chunk.push_back(tileMap(platform,vector2f(tileSize*x+(chunkNumber+chunkPosition)*screenWidth,tileSize*y),platformer));
                                         if(p_map[y][x-1]==1)
                                         {
                                             int lastTileAdded=chunk.size()-1;

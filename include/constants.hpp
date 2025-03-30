@@ -32,7 +32,7 @@ const SDL_Color chosenColor={255,255,255,255};
 const int distancePerScore=50;
 const int scorePerEnemy=50;
 const string basePath="res/mapList/map";
-//player movement constants
+//player constants
 const float MoveSpeed=5.0f;
 const float dashSpeed=15.0f;
 const float gravity=0.7f;
@@ -62,8 +62,8 @@ const int wallHeight=screenHeight/2;
 //enemy constant
 const int playerHP=10;
 const int enemyHP=3;
-const float enemyPushY=-6;
-const float enemyPushX=8;
+const float enemyPushY=-5;
+const float enemyPushX=6;
 const float enemyDetectRange=7.0f;
 const float enemyPatrolSpeed=2.0f;
 const float enemyFollowAcceleration=0.1f;

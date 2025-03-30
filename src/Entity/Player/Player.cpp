@@ -4,7 +4,7 @@
 
 void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &mouseState,int mouseX,int mouseY,Projectile &slashProjectile,Projectile &bulletProjectile, float timeAcumulator,camera Cam,const PlaySound &allSound)
 {
-
+    //caculate distance from player to cursor
     SDL_Rect dst;
 	dst.x=position.x-Cam.viewPortion.x;
 	dst.y=position.y-Cam.viewPortion.y;
@@ -14,6 +14,8 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
     float dy = mouseY - centerEntity().y;
     vector2f toMouseVector=vector2f(dx,dy);
     toMouseVector.normalise();
+
+
     float currentTime=utils::getTimeSeconds();
 
 
@@ -27,7 +29,7 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
        velocity.x=0;
    }
 
-
+    //skip all movement when in immunedame state
     if(currentState==ImmuneDame) goto Movement;
 
 
@@ -36,28 +38,19 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
 
 
 
-    if(isAirborne&&isSlashing&&velocity.y>0)
-    velocity.y=slashFallSpeed;
 
 
 
 
 
 
-
-
+    //start to dash
    if((mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT))&&!isDashing&&!isDashCooldown)
    {
-    currentState=Dashing;
     isDashing=1;
-    slashProjectile.active=1;
-    isSlashing=1;
-    slashProjectile.spawnTime = currentTime;
+    currentState=Dashing;
     dashStartTime=currentTime;
     velocity={0,0};
-    rotateAngle=atan2(dy,dx)*180.0f/M_PI;
-    spriteFlip=SDL_FLIP_NONE;
-
             playSound(allSound.dashSound,SFXVolume);
    }
 
@@ -65,7 +58,7 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
 
 
 
-
+    //handle dash direction
    if(isDashing)
    {
        if(currentTime-dashStartTime>dashTimer)
@@ -80,17 +73,25 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
        }
        else
        {
-           velocity=toMouseVector*dashSpeed;
-           goto Movement;
+
+            slashProjectile.active=1;
+            isSlashing=1;
+            slashProjectile.spawnTime = currentTime;
+            velocity=toMouseVector*dashSpeed;
+            rotateAngle=atan2(dy,dx)*180.0f/M_PI;
+            spriteFlip=SDL_FLIP_NONE;
+            goto Movement;
        }
 
    }
 
+    //handle dash cooldown
    if(isDashCooldown&&currentTime-dashCooldownTime>dashCooldown)
    {
        isDashCooldown=0;
    }
 
+   //handle horizontal movement
     if(keystates[SDL_SCANCODE_A] || keystates[SDL_SCANCODE_LEFT])
     {
         velocity.x=-MoveSpeed;
@@ -104,7 +105,7 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
     }
 
 
-
+    //handle jump and jump cooldown
     if(!isAirborne)
         jumpStartTime=currentTime;
     if( ( keystates[SDL_SCANCODE_SPACE] ||keystates[SDL_SCANCODE_UP] || keystates[SDL_SCANCODE_W] )&&currentTime-jumpStartTime<=jumpTimer)
@@ -116,28 +117,27 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
     }
 
 
-
+    //reduce velocity when slashing mid air
+    if(isAirborne&&isSlashing&&velocity.y>0)
+    velocity.y=slashFallSpeed;
     if(isSlashing&&isAirborne) velocity.x/=2;
 
-    if(velocity.x==0)
-        currentState=StandingStill;
 
-        if(position.y>screenHeight-entityScalar*playerHeight/2-tileSize)
-        {
+    //teleport play to top of screen when fall in the void
+    if(position.y>screenHeight-entityScalar*playerHeight/2-tileSize)
+    {
             position.y=entityScalar*playerHeight/2;
             velocity.y=1;
             HP-=voidDame;
-        }
+    }
 
-
+    //update current state based on velocity
+    if(velocity.x==0)
+            currentState=StandingStill;
         if(velocity.y<0)
         currentState=Jumping;
     else if(velocity.y>0)
         currentState=Falling;
-
-
-
-
     if(velocity.x>=0)
     {
         spriteFlip=SDL_FLIP_NONE;
@@ -146,6 +146,7 @@ void Player::updatePlayer(const Uint8* keystates,SDL_Event &event,const Uint32 &
 
 Movement:
     Move();
+    //handle slash attack
     if( (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT) )&&!isSlashing)
     {
         slashProjectile.active=1;
@@ -155,15 +156,38 @@ Movement:
             playSound(allSound.slashSound,SFXVolume);
     }
 
+    if(isSlashing)
+    {
+        slashProjectile.position=position;
+        slashProjectile.rotateCenter={entityScalar*currentFrame.w/2,entityScalar*currentFrame.h/2};
+
+    slashProjectile.rotateAngle=atan2(dy,dx)*180.0/M_PI;
+    slashProjectile.currentFrame.x=int(timeAcumulator/(timeStep/2))%6*slashWidth;
+    if(slashProjectile.rotateAngle<-90||slashProjectile.rotateAngle>90)
+    slashProjectile.spriteFlip=SDL_FLIP_VERTICAL;
+    else slashProjectile.spriteFlip=SDL_FLIP_NONE;
+
+    }
+
+
+
+    if(currentTime-slashProjectile.spawnTime>=slashTimer)
+    {
+            slashProjectile.active=0;
+            isSlashing=0;
+    }
+
+
+    //handle bullet attack
     if(!isBulletCooldown)
         shootStartTime=currentTime;
 
        if( ( keystates[SDL_SCANCODE_S] || keystates[SDL_SCANCODE_DOWN] ) && ammo && !isBulletCooldown)
    {
-       isBulletCooldown=1;
-       bulletProjectile.active=1;
-       bulletProjectile.position=position;
-       bulletProjectile.velocity=toMouseVector*bulletSpeed;
+        isBulletCooldown=1;
+        bulletProjectile.active=1;
+        bulletProjectile.position=position;
+        bulletProjectile.velocity=toMouseVector*bulletSpeed;
         bulletProjectile.rotateCenter={entityScalar*currentFrame.w/2,entityScalar*currentFrame.h/2};
         bulletProjectile.rotateAngle=atan2(dy,dx)*180.0/M_PI;
         if(bulletProjectile.rotateAngle<-90||bulletProjectile.rotateAngle>90)
@@ -172,38 +196,23 @@ Movement:
         ammo--;
         playSound(allSound.bulletSound,SFXVolume);
    }
+
    if(isBulletCooldown&&currentTime-shootStartTime>=bulletCooldown)
-            {
-                isBulletCooldown=0;
-            }
+    {
+        isBulletCooldown=0;
+    }
    if(distance(bulletProjectile.position,position)>=2*screenWidth)
         bulletProjectile.active=0;
 
 
    if(bulletProjectile.active)
    {
+       bulletProjectile.currentFrame.x=int(timeAcumulator/(timeStep/2))%8*bulletWidth;
        bulletProjectile.Move();
    }
 
-    if(isSlashing)
-    {
-        slashProjectile.position=position;
-        slashProjectile.rotateCenter={entityScalar*currentFrame.w/2,entityScalar*currentFrame.h/2};
 
-    slashProjectile.rotateAngle=atan2(dy,dx)*180.0/M_PI;
-    if(slashProjectile.rotateAngle<-90||slashProjectile.rotateAngle>90)
-    slashProjectile.spriteFlip=SDL_FLIP_VERTICAL;
-    else slashProjectile.spriteFlip=SDL_FLIP_NONE;
-    }
-
-
-
-    if(currentTime-slashProjectile.spawnTime>=slashTimer)
-        {
-            slashProjectile.active=0;
-            isSlashing=0;
-        }
-
+   //handle animation based on current state
     switch(currentState)
     {
         case StandingStill: animationRow=0;
@@ -251,7 +260,7 @@ Movement:
     }
 
     }
-//10 FPS
+//Animation is rendered at 10 FPS
 
 
 }
