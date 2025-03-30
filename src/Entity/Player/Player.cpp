@@ -214,7 +214,7 @@ Movement:
                             currentFrame.y=animationRow*playerHeight;
                             currentFrame.x = (int(timeAcumulator/timeStep)%6)*playerWidth;
 
-                                    playSound(allSound.runningSound,SFXVolume);
+                                   if(!isBulletCooldown&&!isSlashing) playSound(allSound.runningSound,SFXVolume);
                             break;
         case Jumping      : currentFrame.y=2*playerHeight;
                             currentFrame.x=0;

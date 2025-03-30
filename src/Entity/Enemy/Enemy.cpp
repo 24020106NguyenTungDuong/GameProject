@@ -163,7 +163,7 @@ void Enemy::collisionPlayer(Player &p_player,Projectile p_slash,Projectile p_bul
 
     if(!immuneDame)
     {
-    if(checkEntityCollision(p_player)&&p_player.currentState==Dashing)
+    if( (checkEntityCollision(p_player)||checkSlashCollision(p_player,p_slash) )&&p_player.currentState==Dashing)
         {
         HP=0;
         return;
